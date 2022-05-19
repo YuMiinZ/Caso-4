@@ -2,6 +2,7 @@
     Caso 4
 
     Elaborado por Ericka Yu Min Guo y Fiorella Zelaya Coto
+    
 */
 #define DISTRIBUTION_SIZE 3
 #define STB_IMAGE_IMPLEMENTATION
