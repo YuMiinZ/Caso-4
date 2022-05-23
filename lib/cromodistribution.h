@@ -1,10 +1,8 @@
 #ifndef _CROMODISTRIBUTION_
 #define _CROMODISTRIBUTION_ 1
 
-#define CROMO_MAX_VALUE 256
-#define NIBBLE_SIZE 8
-
-using namespace std;
+#define CROMO_MAX_VALUE 65536
+#define NIBBLE_SIZE 16
 
 struct cromodistribution {
     string name;
