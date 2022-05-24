@@ -12,7 +12,6 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
-//#include <string.h>
 #include "GrayColor.hpp"
 #include "Area.hpp"
 #include "functions.hpp"
@@ -24,9 +23,6 @@
 using namespace std;
 
 int main(){
-    
-    //First we fill the dynamic table we'll need for the
-    //probabilistic algorithm
 
     int boxes = 0, totalPoints = 777600*SAMPLE_RATE,
     pointsPerBox = totalPoints / 216;
@@ -50,8 +46,8 @@ int main(){
         cout << "Image not loaded" << endl;
     }
     
-
-    //Next we initialize the table of the areas of the image
+    //First we fill the dynamic table we'll need for the
+    //probabilistic algorithm and initialize the table of the areas of the image
     //with their equiprobable percentages
     fillTable(boxes, percentage, table);
     

@@ -28,18 +28,20 @@ void fillTable(int &pBoxes, float pPercentage, std::vector<Area*> &pTable){
     Area *newArea;
     float dynamicPercentage = 0;
     while (pBoxes != 216){
-        if (x2 > 900){
+        if (x2 > 900){ //if it reaches a limit
             x1 = 180; 
             x2 = 240;
             y1 = y2;
             y2 += 60;
         }
+
+        //creates new area
         newArea = new Area(x1, y1, x2, y2, 720, pPercentage);
         newArea->SetMinPercentage(dynamicPercentage); newArea->SetDynamicMinPercentage(dynamicPercentage);
         newArea->SetMaxPercentage(dynamicPercentage + pPercentage); newArea->SetDynamicMaxPercentage(dynamicPercentage + pPercentage);
-        //cout << x1 << " " << y1 << " " << x2 << " " << y2 << " " << (float)pPercentage << " " << (float)dynamicPercentage << " "  << (float)dynamicPercentage + pPercentage << endl;  
         dynamicPercentage += pPercentage;
         pTable.push_back(newArea);
+        
         x1 = x2;
         x2 += 60;
         pBoxes++;
@@ -67,30 +69,42 @@ void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTab
     while(generatedPoints != acceptablePointsValue){
         random = 0 + (float)(rand()) / ((float)(RAND_MAX/(1 - 0)));
 
+        //gets the approximate index of the area based on the random
         indexArea = random / pPercentage; // SE NECESITA ALGUNA FORMULA PARA NO RECORRER TODO EL std::vector, ESTA NO SIRVE
-        if (indexArea > 215){indexArea = 215;}
+        if (indexArea > 215){continue;} //if it's out of range
+
+        //sets the current area
         currentArea = pTable.at(indexArea);
         min = currentArea->GetMinPercentage();
         max = currentArea->GetMaxPercentage();
-        while ((min > random || max < random) && indexArea < pBoxes){
+
+        //validates that the current area is the one that matches with the random, if not, it looks for the
+        //area that does
+        while ((min > random || max < random) && indexArea < pBoxes){ //recorre con el pivot para encontrar el % adecuado
             currentArea = pTable.at(indexArea);
             min = currentArea->GetMinPercentage();
             max = currentArea->GetMaxPercentage();
             indexArea++;
             
         }
+
+        //if the current area has 0 elements left it tries again (shouldn't happen)
         isEmpty = currentArea->substract(); 
         if(isEmpty){continue;}
 
+        //gets randoms (x,y)
         x = currentArea->GetX1() + (rand() % 60);
         y = currentArea->GetY1() + (rand() % 60);
 
+        //gets the rgb color and converts it into gray rgb
         size_t index = RGB * (y * pWidth + x);
         int red = pImage[index];
         int green = pImage[index + 1];
         int blue = pImage[index + 2];
         newGrayColor.value = getGrayscaleValue(red, green, blue);
         currentArea->addColor(newGrayColor);
+
+        //adjust the percentage of the current area
         currentArea->SetPercentage((float)currentArea->GetNumberOfPoints() / (float)pTotalPoints);
         currentArea->SetMinPercentage(min);
         currentArea->SetMaxPercentage(min + ((float)currentArea->GetNumberOfPoints() / (float)pTotalPoints));
@@ -119,12 +133,13 @@ void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
     float density;
     Area *currentArea;
     string shape = "", size = "";
-    cout << pBoxes << endl;
+    
     for (int i = 0; i < pBoxes; i++){
         currentArea = pTable.at(i);
         density = ((float)pPointsPerBox - (float)currentArea->GetNumberOfPoints()) / (3600*SAMPLE_RATE);
         shape = rand() % 2 == 0 ? "line" : "dot";
         currentArea->SetShape(shape);
+
         if (shape == "line"){
             if(density < 0.46){size = "S";}
             else if (density < 0.53){size = "M";}

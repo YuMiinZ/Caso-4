@@ -198,16 +198,13 @@ class Area{
          * 
          */
         void setDominantGray(){
-                if (colors.size() == 0){
-                        return;
-                }
-                int dominant = colors.at(0).value;
+               GrayColor dominant = colors.at(0);
                for (GrayColor current: colors){
-                        if(current.value > dominant){
-                                dominant = current.value;
+                        if(current.appearances > dominant.appearances){
+                                dominant = current;
                         }
                 } 
-                GrayColorValue = dominant;
+                GrayColorValue = dominant.value;
         }
 };
 
