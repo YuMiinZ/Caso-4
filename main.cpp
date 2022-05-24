@@ -75,27 +75,35 @@ int main(){
     cout << "1" << endl;
     //Next we start the analysis of the image using random numbers
     //and adjusting the table we previously created. 
-    int x, y, indexArea, generatedPoints = 0, acceptablePointsValue = totalPoints*0.7, grayValue;
+    int x, y, indexArea, generatedPoints = 0, acceptablePointsValue = totalPoints*0.7, grayValue, isEmpty;
     float random, min, max;
     Area *currentArea;
     GrayColor newGrayColor;
     while(generatedPoints != acceptablePointsValue){
+        //cout << "0 Y 1: " << table.at(215)->GetMinPercentage() << " " << table.at(215)->GetMaxPercentage() << endl;
+        //cout << "0 Y 1: " << table.at(1)->GetMinPercentage() << " " << table.at(0)->GetMaxPercentage() << endl;
         random = 0 + (float)(rand()) / ((float)(RAND_MAX/(1 - 0)));
 
         indexArea = random / percentage; // SE NECESITA ALGUNA FORMULA PARA NO RECORRER TODO EL VECTOR, ESTA NO SIRVE
-        //if (indexArea > 215){indexArea = 215;}
-        cout << (float)random << "-"; cout << indexArea << endl;
+        if (indexArea > 215){indexArea = 215;}
+        //cout << (float)random << "-"; cout << indexArea << endl;
         currentArea = table.at(indexArea);
-        cout << "parada 1" << endl;
+        //if (currentArea->GetNumberOfPoints() <= 0){continue;}
+        //cout << "parada 1" << endl;
         min = currentArea->GetMinPercentage();
         max = currentArea->GetMaxPercentage();
-        cout << "parada 2" << endl;
-        while (min > random || max < random){ //se cicla
-            indexArea = 0;
-            currentArea = table.at(++indexArea);
+        //cout << "parada 2 " << random << " "<< indexArea << endl;
+        while ((min > random || max < random) && indexArea < boxes){
+            
+            currentArea = table.at(indexArea);
+            //cout << "ciclo: " << min << " " << max << " " << indexArea << endl;
             min = currentArea->GetMinPercentage();
             max = currentArea->GetMaxPercentage();
+            indexArea++;
+            
         }
+        isEmpty = currentArea->substract(); 
+        if(isEmpty){continue;}
 
         x = currentArea->GetX1() + (rand() % 60);
         y = currentArea->GetY1() + (rand() % 60);
@@ -107,52 +115,56 @@ int main(){
         newGrayColor.value = getGrayscaleValue(red, green, blue);
         //quadrant->verifyRange(red, green, blue);
         currentArea->addColor(newGrayColor);
-        currentArea->substract();
         currentArea->SetPercentage((float)currentArea->GetNumberOfPoints() / (float)totalPoints);
-        currentArea->adjustPercentages(totalPoints, min);
+        currentArea->SetMinPercentage(min);
+        currentArea->SetMaxPercentage(min + ((float)currentArea->GetNumberOfPoints() / (float)totalPoints));
 
         //adjust all the percentages
-        for (int i = indexArea; i < boxes; i++){
-            table.at(indexArea + 1)->adjustPercentages(totalPoints, currentArea->GetMaxPercentage());
+        for (int i = indexArea; i < boxes-1; i++){
+            //cout << "In: " << currentArea->GetMaxPercentage() << endl;
+            //cout << i + 1 << " ";
+            table.at(indexArea + 1)->adjustPercentages(totalPoints, table.at(indexArea)->GetMaxPercentage());
         }
 
         generatedPoints++;
-        indexArea++;
+        
     }
 
     cout << generatedPoints << endl;
-    cout << "2" << endl;
+    cout << table.size() << endl;
 
     float density;
     string shape = "", size = "";
-    for (Area *current: table){
-        density = (pointsPerBox - current->GetNumberOfPoints()) / (3600*SAMPLE_RATE);
-        shape = density < 0.6 ? "line" : "dot";
-        cout << shape << endl;
-        current->SetShape(shape);
+    for (int i = 0; i < boxes; i++){
+        currentArea = table.at(i);
+        density = ((float)pointsPerBox - (float)currentArea->GetNumberOfPoints()) / (3600*SAMPLE_RATE);
+        shape = rand() % 2 == 0 ? "line" : "dot";
+        currentArea->SetShape(shape);
         if (shape == "line"){
-            if(density < 0.2){size = "S";}
-            else if (density < 0.6){size = "M";}
+            if(density < 0.46){size = "S";}
+            else if (density < 0.53){size = "M";}
             else{size = "L";}
         }
         else{
-            if(density < 0.2){size = "L";}
-            else if (density < 0.6){size = "M";}
+            if(density < 0.46){size = "L";}
+            else if (density < 0.53){size = "M";}
             else{size = "S";}
         }
-        current->SetSize(size);
-        cout << current->GetSize() << endl;
-        current->setDominantGray();
+        currentArea->SetSize(size);
+        currentArea->setDominantGray();
 
-        //cout << "done" << endl;
-
-        cout << current->GetX1() << endl;
-        cout << current->GetY1() << endl;
-        cout << current->GetX2() << endl;
-        cout << current->GetY2() << endl;
-        cout << current->GetGrayColorValue()<< endl;
-        cout << current->GetShape() << endl;
-        cout << current->GetSize() << endl;
+        cout << i << ". ";
+        //cout << density << " ";
+        cout << currentArea->GetX1() << " ";
+        cout << currentArea->GetY1() << " ";
+        cout << currentArea->GetX2() << " ";
+        cout << currentArea->GetY2() << " ";
+        cout << currentArea->GetMinPercentage() << " ";
+        cout << currentArea->GetMaxPercentage() << " ";
+        cout << currentArea->GetNumberOfPoints()<< " ";
+        cout << currentArea->GetGrayColorValue()<< " ";
+        cout << currentArea->GetShape() << " ";
+        cout << currentArea->GetSize() << endl;
     }
 
 }

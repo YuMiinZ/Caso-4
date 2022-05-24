@@ -13,7 +13,7 @@ class Area{
         int y2;
         int density;
         int numberOfPoints;
-        int GrayColorValue;
+        int GrayColorValue = 255;
         float percentage;
         float minPercentage;
         float maxPercentage;     
@@ -154,16 +154,26 @@ class Area{
                 colors.push_back(pNewColor);
         }
 
-        void substract(){
+        bool substract(){
+                if (numberOfPoints <= 0){
+                        return true;
+                }
                 numberOfPoints--;
+                return false;
         }
 
         void adjustPercentages(int pTotalPoints, float pLastMin){
-                minPercentage += pLastMin;
-                maxPercentage = minPercentage + (numberOfPoints / pTotalPoints);
+                //std::cout << "current: " << minPercentage << " " << maxPercentage << std::endl;
+                //std::cout << pTotalPoints << " " << numberOfPoints << std::endl;
+                minPercentage = pLastMin;
+                maxPercentage = minPercentage + ((float)numberOfPoints / (float)pTotalPoints);
+                //std::cout << "ADJUST: " << minPercentage << " " << maxPercentage << std::endl;
         }
 
         void setDominantGray(){
+                if (colors.size() == 0){
+                        return;
+                }
                 int dominant = colors.at(0).value;
                for (GrayColor current: colors){
                         if(current.value > dominant){
