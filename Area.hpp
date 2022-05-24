@@ -3,8 +3,13 @@
 
 //  #include <std::vector>
 //  #include <string.h>
-#include "functions.hpp"
 
+using namespace std;
+
+/**
+ * @brief class Area
+ * 
+ */
 class Area{
     private:
         int x1;
@@ -144,6 +149,12 @@ class Area{
                 GrayColorValue = pGrayColorValue;
         }
 
+        /**
+         * @brief adds the color to the vector of colors or counts the appearances
+         *        of that color if it already exits in the vector.
+         * 
+         * @param pNewColor 
+         */
         void addColor(GrayColor pNewColor){
                 for (GrayColor current: colors){
                         if(current.value == pNewColor.value){
@@ -154,6 +165,12 @@ class Area{
                 colors.push_back(pNewColor);
         }
 
+        /**
+         * @brief substracts 1 from the number of points the area has left.
+         * 
+         * @return true 
+         * @return false 
+         */
         bool substract(){
                 if (numberOfPoints <= 0){
                         return true;
@@ -162,6 +179,12 @@ class Area{
                 return false;
         }
 
+        /**
+         * @brief adjusts the percentages of the areas when a new point is found.
+         * 
+         * @param pTotalPoints 
+         * @param pLastMin 
+         */
         void adjustPercentages(int pTotalPoints, float pLastMin){
                 //std::cout << "current: " << minPercentage << " " << maxPercentage << std::endl;
                 //std::cout << pTotalPoints << " " << numberOfPoints << std::endl;
@@ -170,6 +193,10 @@ class Area{
                 //std::cout << "ADJUST: " << minPercentage << " " << maxPercentage << std::endl;
         }
 
+        /**
+         * @brief Set the Dominant Gray color of the area
+         * 
+         */
         void setDominantGray(){
                 if (colors.size() == 0){
                         return;
