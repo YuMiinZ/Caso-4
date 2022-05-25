@@ -22,6 +22,7 @@ class GeneticBase {
         void evaluateFitness() {
             fitnessPopulation->clear();
             unfitnessPopulation->clear();
+            //formula para fitness float resultado=(1/((sqrt(pow((x2-x1),2)+pow((y2-y1),2)))/10800)); //FORMULA
 
             for(int i=0;i<population->size(); i++) {
                population->at(i)->setFitnessValue(fitness(population->at(i)));
@@ -107,14 +108,24 @@ class GeneticBase {
         void initPopulation(int pAmountOfIndividuals) {
             population->clear();
 
-            for(int i=0; i<pAmountOfIndividuals; i++) {
+            /*for(int i=0; i<pAmountOfIndividuals; i++) {
                 individual* p = new individual((unsigned char) rand()%CROMO_MAX_VALUE);
                 population->push_back(p);
+            }*/
+
+            for(int quantity=0; quantity<200; quantity++) {
+                individual* newIndividual = new individual(rand()%65537); //Random number between 0 and 65536
+                population->push_back(newIndividual);
             }
         }
 
         void produceGenerations(int ptargetGenerations, int pChildrensPerGenerations) {
-            for(int i=0; i<ptargetGenerations; i++) {
+            /*for(int i=0; i<ptargetGenerations; i++) {
+                evaluateFitness();
+                reproduce(pChildrensPerGenerations);
+            }*/
+
+            for(int i=0; i<50; i++) {
                 evaluateFitness();
                 reproduce(pChildrensPerGenerations);
             }
@@ -129,46 +140,46 @@ class GeneticBase {
         }
 
         void crearCombinacion(vector<Area*> pTable){
-    Area *currentArea;
-    vector<Area*> combinationTable;
-    int min=0, max=0;
-    float dynamicPercentage = 0, density;
-    int totalPoints=23328;
-    string shape = "", size = "";
-    for (int i = 0; i < pTable.size(); i++){
-        currentArea = pTable.at(i);
-        for (GrayColor current: currentArea->getVectorColors()){
-            if(current.appearances!=0){
-                max=min+(65536*(float)current.appearances/(float)23328);
-                Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
-                                        (float)current.appearances/(float)23328,current.value, min,max);
-                min=(min+65536*newArea->GetPercentage())+1;
+            Area *currentArea;
+            vector<Area*> combinationTable;
+            int min=0, max=0;
+            float dynamicPercentage = 0, density;
+            int totalPoints=23328;
+            string shape = "", size = "";
+            for (int i = 0; i < pTable.size(); i++){
+                currentArea = pTable.at(i);
+                for (GrayColor current: currentArea->getVectorColors()){
+                    if(current.appearances!=0){
+                        max=min+(65536*(float)current.appearances/(float)23328);
+                        Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
+                                                (float)current.appearances/(float)23328,current.value, min,max);
+                        min=(min+65536*newArea->GetPercentage())+1;
 
-                density = ((float)current.appearances) / (120*SAMPLE_RATE);
-                shape = rand() % 2 == 0 ? "line" : "dot";
-                newArea->SetShape(shape);
+                        density = ((float)current.appearances) / (120*SAMPLE_RATE);
+                        shape = rand() % 2 == 0 ? "line" : "dot";
+                        newArea->SetShape(shape);
 
-                if (shape == "line"){
-                    if(density < 0.46){size = "S";}
-                    else if (density < 0.6){size = "M";}
-                    else{size = "L";}
+                        if (shape == "line"){
+                            if(density < 0.46){size = "S";}
+                            else if (density < 0.6){size = "M";}
+                            else{size = "L";}
+                        }
+                        else{
+                            if(density < 0.46){size = "L";}
+                            else if (density < 0.6){size = "M";}
+                            else{size = "S";}
+                        }
+                        newArea->SetDensity(density);
+                        newArea->SetSize(size);
+
+                        combinationTable.push_back(newArea);
+                    }
                 }
-                else{
-                    if(density < 0.46){size = "L";}
-                    else if (density < 0.6){size = "M";}
-                    else{size = "S";}
-                }
-                newArea->SetDensity(density);
-                newArea->SetSize(size);
+                    //if(current.value!=currentArea->GetGrayColorValue()){
 
-                combinationTable.push_back(newArea);
             }
+
         }
-            //if(current.value!=currentArea->GetGrayColorValue()){
-
-    }
-
-}
 
 };
 
