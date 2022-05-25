@@ -3,7 +3,7 @@
 
 /**
  * @brief struct for each gray color
- * 
+ *
  */
 struct GrayColor{
     int value;

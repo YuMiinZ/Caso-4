@@ -127,6 +127,49 @@ class GeneticBase {
         void sortingTable(vector<Area*> &pTable){
             sort(pTable.begin(), pTable.end(), more_than_quantity());
         }
+
+        void crearCombinacion(vector<Area*> pTable){
+    Area *currentArea;
+    vector<Area*> combinationTable;
+    int min=0, max=0;
+    float dynamicPercentage = 0, density;
+    int totalPoints=23328;
+    string shape = "", size = "";
+    for (int i = 0; i < pTable.size(); i++){
+        currentArea = pTable.at(i);
+        for (GrayColor current: currentArea->getVectorColors()){
+            if(current.appearances!=0){
+                max=min+(65536*(float)current.appearances/(float)23328);
+                Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
+                                        (float)current.appearances/(float)23328,current.value, min,max);
+                min=(min+65536*newArea->GetPercentage())+1;
+
+                density = ((float)current.appearances) / (120*SAMPLE_RATE);
+                shape = rand() % 2 == 0 ? "line" : "dot";
+                newArea->SetShape(shape);
+
+                if (shape == "line"){
+                    if(density < 0.46){size = "S";}
+                    else if (density < 0.6){size = "M";}
+                    else{size = "L";}
+                }
+                else{
+                    if(density < 0.46){size = "L";}
+                    else if (density < 0.6){size = "M";}
+                    else{size = "S";}
+                }
+                newArea->SetDensity(density);
+                newArea->SetSize(size);
+
+                combinationTable.push_back(newArea);
+            }
+        }
+            //if(current.value!=currentArea->GetGrayColorValue()){
+
+    }
+
+}
+
 };
 
 #endif

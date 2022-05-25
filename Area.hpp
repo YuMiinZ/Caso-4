@@ -16,7 +16,7 @@ class Area{
         int y1;
         int x2;
         int y2;
-        int density;
+        float density;
         int numberOfPoints;
         int GrayColorValue = 255;
         float percentage;
@@ -31,7 +31,7 @@ class Area{
 
     public:
         Area() = default;
-        Area(int pNewX1, int pNewY1, int pNewX2, int pNewY2, int pNewNumberOfPoints, int pNewPercentage){
+        Area(int pNewX1, int pNewY1, int pNewX2, int pNewY2, int pNewNumberOfPoints, float pNewPercentage){
             x1 = pNewX1; y1 = pNewY1; x2 = pNewX2; y2 = pNewY2;
             numberOfPoints = pNewNumberOfPoints;
             percentage = pNewPercentage;
@@ -134,11 +134,11 @@ class Area{
                 size = pSize;
         }
 
-        int GetDensity() const {
+        float GetDensity() const {
                 return density;
         }
 
-        void SetDensity(int pDensity) {
+        void SetDensity(float pDensity) {
                 density = pDensity;
         }
 
@@ -211,14 +211,6 @@ class Area{
          */
         void setDominantGray(){
                GrayColor dominant = colors.at(0);
-<<<<<<< HEAD
-               for (GrayColor current: colors){
-                        if(current.appearances > dominant.appearances){
-                                dominant = current;
-                        }
-                }
-                GrayColorValue = dominant.value;
-=======
                vector<GrayColor> newColorsVector(11);
                _initColorVector(newColorsVector);
                int newColor;
@@ -234,7 +226,6 @@ class Area{
                 }
                 colors = newColorsVector;
                 // GrayColorValue = dominant.value;
->>>>>>> 736f06608ddf1e893b5d6f08a660862ce3bc100c
         }
 };
 
