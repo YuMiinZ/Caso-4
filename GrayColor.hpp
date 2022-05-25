@@ -10,4 +10,10 @@ struct GrayColor{
     int appearances;
 };
 
+void _initColorVector(std::vector<GrayColor> &vector){
+    for (int i = 0; i < 11; i++){
+        vector[i].value = i;
+    }
+}
+
 #endif
