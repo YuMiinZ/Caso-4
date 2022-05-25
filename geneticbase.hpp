@@ -3,6 +3,8 @@
 #include <vector>
 #include "lib/cromodistribution.h"
 #include "lib/individual.h"
+#include <algorithm>
+
 
 using namespace std;
 
