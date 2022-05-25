@@ -150,18 +150,16 @@ class Area{
                 GrayColorValue = pGrayColorValue;
         }
 
-<<<<<<< HEAD
         vector<GrayColor> getVectorColors(){
             return colors;
-=======
+        }
+
         std::vector<GrayColor> GetColors() const {
                 return colors;
         }
 
         void SetColors(std::vector<GrayColor> colors) {
-                colors = colors;
->>>>>>> 736f06608ddf1e893b5d6f08a660862ce3bc100c
-        }
+                colors = colors;        }
 
         /**
          * @brief adds the color to the vector of colors or counts the appearances
