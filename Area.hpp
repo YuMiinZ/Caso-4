@@ -8,7 +8,7 @@ using namespace std;
 
 /**
  * @brief class Area
- * 
+ *
  */
 class Area{
     private:
@@ -21,13 +21,13 @@ class Area{
         int GrayColorValue = 255;
         float percentage;
         float minPercentage;
-        float maxPercentage;     
+        float maxPercentage;
         float dynamicMinPercentage;
-        float dynamicMaxPercentage; 
+        float dynamicMaxPercentage;
         std::string shape;
         std::string size;
         std::vector<GrayColor> colors;
-        
+
     public:
         Area() = default;
         Area(int pNewX1, int pNewY1, int pNewX2, int pNewY2, int pNewNumberOfPoints, int pNewPercentage){
@@ -132,14 +132,14 @@ class Area{
         void SetSize(std::string pSize) {
                 size = pSize;
         }
-  
+
         int GetDensity() const {
                 return density;
         }
 
         void SetDensity(int pDensity) {
                 density = pDensity;
-        } 
+        }
 
         int GetGrayColorValue() const {
                 return GrayColorValue;
@@ -149,11 +149,15 @@ class Area{
                 GrayColorValue = pGrayColorValue;
         }
 
+        vector<GrayColor> getVectorColors(){
+            return colors;
+        }
+
         /**
          * @brief adds the color to the vector of colors or counts the appearances
          *        of that color if it already exits in the vector.
-         * 
-         * @param pNewColor 
+         *
+         * @param pNewColor
          */
         void addColor(GrayColor pNewColor){
                 for (GrayColor current: colors){
@@ -167,9 +171,9 @@ class Area{
 
         /**
          * @brief substracts 1 from the number of points the area has left.
-         * 
-         * @return true 
-         * @return false 
+         *
+         * @return true
+         * @return false
          */
         bool substract(){
                 if (numberOfPoints <= 0){
@@ -181,9 +185,9 @@ class Area{
 
         /**
          * @brief adjusts the percentages of the areas when a new point is found.
-         * 
-         * @param pTotalPoints 
-         * @param pLastMin 
+         *
+         * @param pTotalPoints
+         * @param pLastMin
          */
         void adjustPercentages(int pTotalPoints, float pLastMin){
                 //std::cout << "current: " << minPercentage << " " << maxPercentage << std::endl;
@@ -195,7 +199,7 @@ class Area{
 
         /**
          * @brief Set the Dominant Gray color of the area
-         * 
+         *
          */
         void setDominantGray(){
                GrayColor dominant = colors.at(0);
@@ -203,7 +207,7 @@ class Area{
                         if(current.appearances > dominant.appearances){
                                 dominant = current;
                         }
-                } 
+                }
                 GrayColorValue = dominant.value;
         }
 };

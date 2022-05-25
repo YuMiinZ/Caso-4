@@ -68,14 +68,33 @@ class GeneticBase {
             return children;
         }
 
+        struct more_than_quantity
+        {
+            inline bool operator() ( Area* struct1,  Area* struct2)
+            {
+                return (struct1->GetNumberOfPoints() > struct2->GetNumberOfPoints());
+            }
+        };
+
     public:
         GeneticBase() {
             this->population = new vector<individual*>();
             this->fitnessPopulation = new vector<individual*>();
             this->unfitnessPopulation = new vector<individual*>();
-            this->representation = new vector<cromodistribution*>(); 
+            this->representation = new vector<cromodistribution*>();
             this->populationQuantity = 0;
             this->targetGenerations = 20;
+        }
+
+        GeneticBase(vector<Area*> pTable) {
+            this->population = new vector<individual*>();
+            this->fitnessPopulation = new vector<individual*>();
+            this->unfitnessPopulation = new vector<individual*>();
+            this->representation = new vector<cromodistribution*>();
+            this->populationQuantity = 0;
+            this->targetGenerations = 20;
+            sortingTable(pTable);
+            combinationTable=pTable;
         }
 
         void addDistribution(cromodistribution* pDistribution) {
@@ -90,7 +109,7 @@ class GeneticBase {
                 population->push_back(p);
             }
         }
-        
+
         void produceGenerations(int ptargetGenerations, int pChildrensPerGenerations) {
             for(int i=0; i<ptargetGenerations; i++) {
                 evaluateFitness();
@@ -100,6 +119,10 @@ class GeneticBase {
 
         vector<individual*> getPopulation() {
             return *this->population;
+        }
+
+        void sortingTable(vector<Area*> &pTable){
+            sort(pTable.begin(), pTable.end(), more_than_quantity());
         }
 };
 
