@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <cmath>
 #include "GrayColor.hpp"
 #include "Area.hpp"
 #include "functions.hpp"

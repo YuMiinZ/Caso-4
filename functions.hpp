@@ -41,7 +41,7 @@ void fillTable(int &pBoxes, float pPercentage, std::vector<Area*> &pTable){
         newArea->SetMaxPercentage(dynamicPercentage + pPercentage); newArea->SetDynamicMaxPercentage(dynamicPercentage + pPercentage);
         dynamicPercentage += pPercentage;
         pTable.push_back(newArea);
-        
+
         x1 = x2;
         x2 += 60;
         pBoxes++;
@@ -153,7 +153,7 @@ void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
         currentArea->SetSize(size);
         currentArea->setDominantGray();
 
-        cout << i << ". ";
+        std::cout << "\n" << i << ". ";
         //cout << density << " ";
         std::cout << currentArea->GetX1() << " ";
         std::cout << currentArea->GetY1() << " ";
