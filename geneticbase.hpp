@@ -12,6 +12,7 @@ class GeneticBase {
         vector<individual*> *population;
         vector<individual*> *fitnessPopulation;
         vector<individual*> *unfitnessPopulation;
+        vector<Area*> combinationTable;
         int populationQuantity;
         int targetGenerations;
 
