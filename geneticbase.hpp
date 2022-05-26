@@ -157,9 +157,9 @@ class GeneticBase {
                 currentArea = pTable.at(i);
                 for (GrayColor current: currentArea->getVectorColors()){
                     if(current.appearances!=0){
-                        max=min+(65536*(float)current.appearances/(float)23328);
+                        max=min+(65536*(float)current.appearances/(float)pTotalPoints);
                         Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
-                                                (float)current.appearances/(float)23328,current.value, min,max);
+                                                (float)current.appearances/(float)pTotalPoints,current.value, min,max);
                         min=(min+65536*newArea->GetPercentage())+1;
 
                         density = ((float)current.appearances) / (120*SAMPLE_RATE);

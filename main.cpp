@@ -67,25 +67,7 @@ int main(){
 
     GeneticBase* genetic=new GeneticBase(table);
 
-    vector<Area*> newTable=genetic->getCombinationTable();
 
-    Area* currentArea;
-    for (int i = 0; i < newTable.size(); i++){
-        currentArea = newTable.at(i);
-        /*std::cout << currentArea->GetX1() << " ";
-        std::cout << currentArea->GetY1() << " ";
-        std::cout << currentArea->GetX2() << " ";
-        std::cout << currentArea->GetY2() << " ";
-        std::cout << currentArea->GetMinPercentage() << " ";
-        std::cout << currentArea->GetMaxPercentage() << " ";
-        std::cout << currentArea->GetNumberOfPoints()<< " ";
-        std::cout << currentArea->GetGrayColorValue()<< " ";
-        std::cout << currentArea->GetDensity()<< " ";
-        //std::cout << currentArea->getVectorColors().size()<< " ";
-        std::cout << currentArea->GetShape() << " ";
-        std::cout << currentArea->GetSize() << std::endl;*/
-        //std::cout << currentArea->GetNumberOfPoints()<<endl;
 
-    }
 
 }
