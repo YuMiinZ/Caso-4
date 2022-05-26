@@ -19,7 +19,7 @@ class GeneticBase {
         int targetGenerations;
 
 
-        void evaluateFitness() {
+        /*void evaluateFitness() {
             fitnessPopulation->clear();
             unfitnessPopulation->clear();
             //formula para fitness float resultado=(1/((sqrt(pow((x2-x1),2)+pow((y2-y1),2)))/10800)); //FORMULA
@@ -37,6 +37,25 @@ class GeneticBase {
 
         float fitness(individual *pIndividual) {
             return rand()%100;
+        }*/
+
+        void evaluateFitness(vector<individual*> population){
+            float suma;
+            for(individual* currentIndividual:population){
+                for(individual* currentIndividualCompare: population){
+                    if(currentIndividual->getCromosoma()!=currentIndividualCompare->getCromosoma()){
+                        suma+=(1/((sqrt(pow((currentIndividualCompare->getXValue()-currentIndividual->getXValue()),2)+pow((currentIndividualCompare->getYValue()-currentIndividual->getYValue()),2)))/10800));
+                    }
+                }
+                currentIndividual->setFitnessValue(suma);
+                //No estoy segura si usar esto o no, pero lo dejo aqui
+                if (suma>200) {  // fitness criteria of selection never will be an absolute value always is relative to the population
+                    fitnessPopulation->push_back(currentIndividual);
+                } else {
+                    unfitnessPopulation->push_back(currentIndividual);
+                }
+                suma=0;
+            }
         }
 
         void reproduce(int pAmountOfChildrens) {
@@ -80,6 +99,15 @@ class GeneticBase {
             }
         };
 
+        struct more_than_quantityPopulation
+        {
+            inline bool operator() ( individual* struct1,  individual* struct2)
+            {
+                return (struct1->getFitnessValue() > struct2->getFitnessValue());
+            }
+        };
+
+
     public:
         GeneticBase() {
             this->population = new vector<individual*>();
@@ -115,6 +143,7 @@ class GeneticBase {
 
             for(int quantity=0; quantity<200; quantity++) {
                 individual* newIndividual = new individual(rand()%65537); //Random number between 0 and 65536
+                verifyRange(newIndividual);
                 population->push_back(newIndividual);
             }
         }
@@ -137,6 +166,9 @@ class GeneticBase {
 
         void sortingTable(vector<Area*> &pTable){
             sort(pTable.begin(), pTable.end(), more_than_quantity());
+        }
+        void sortingPopulation(vector<individual*> &pPopulation){
+            sort(pPopulation.begin(), pPopulation.end(), more_than_quantityPopulation());
         }
 
         void setCombinationTable(vector<Area*> pNewTable){
@@ -181,6 +213,16 @@ class GeneticBase {
 
                         combinationTable.push_back(newArea);
                     }
+                }
+            }
+        }
+
+        void verifyRange(individual* &pNewIndividual){
+            for(Area* currentArea:combinationTable){
+                if((float)pNewIndividual->getCromosoma()>=currentArea->GetMinPercentage()&&(float)pNewIndividual->getCromosoma()<=currentArea->GetMaxPercentage()){
+                    pNewIndividual->setXValue((int)currentArea->GetX1()+rand()%abs((int)currentArea->GetX1()-(int)currentArea->GetX2()+1));
+                    pNewIndividual->setYValue((int)currentArea->GetY1()+rand()%abs((int)currentArea->GetY1()-(int)currentArea->GetY2()+1));
+                    break;
                 }
             }
         }
