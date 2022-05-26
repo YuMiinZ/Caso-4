@@ -97,8 +97,8 @@ class GeneticBase {
             this->representation = new vector<cromodistribution*>();
             this->populationQuantity = 0;
             this->targetGenerations = 20;
-            sortingTable(pTable);
-            combinationTable=pTable;
+            createCombinationTable(pTable, 23328);
+            sortingTable(combinationTable);
         }
 
         void addDistribution(cromodistribution* pDistribution) {
@@ -139,12 +139,19 @@ class GeneticBase {
             sort(pTable.begin(), pTable.end(), more_than_quantity());
         }
 
-        void crearCombinacion(vector<Area*> pTable){
+        void setCombinationTable(vector<Area*> pNewTable){
+            combinationTable=pNewTable;
+        }
+
+        vector<Area*> getCombinationTable(){
+            return combinationTable;
+        }
+
+
+        void createCombinationTable(vector<Area*> pTable, int pTotalPoints){
             Area *currentArea;
-            vector<Area*> combinationTable;
             int min=0, max=0;
-            float dynamicPercentage = 0, density;
-            int totalPoints=23328;
+            float density;
             string shape = "", size = "";
             for (int i = 0; i < pTable.size(); i++){
                 currentArea = pTable.at(i);
@@ -175,10 +182,7 @@ class GeneticBase {
                         combinationTable.push_back(newArea);
                     }
                 }
-                    //if(current.value!=currentArea->GetGrayColorValue()){
-
             }
-
         }
 
 };

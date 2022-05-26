@@ -38,6 +38,15 @@ class Area{
             minPercentage = 0;
             maxPercentage = 0;
         }
+        Area(int pNewX1, int pNewY1, int pNewX2, int pNewY2, int pNewNumberOfPoints, float pNewPercentage, int pNewGrayColor, float pMinPercentage,
+             float pMaxPercentage){
+            x1 = pNewX1; y1 = pNewY1; x2 = pNewX2; y2 = pNewY2;
+            numberOfPoints = pNewNumberOfPoints;
+            percentage = pNewPercentage;
+            minPercentage = pMinPercentage;
+            maxPercentage = pMaxPercentage;
+            GrayColorValue=pNewGrayColor;
+        }
         int GetX1() const {
                 return x1;
         }

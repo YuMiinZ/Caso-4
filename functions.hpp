@@ -5,10 +5,10 @@ using namespace std;
 
 /**
  * @brief Get the Grayscale Value of a color with the RGB values
- * 
- * @param red 
- * @param blue 
- * @param green 
+ *
+ * @param red
+ * @param blue
+ * @param green
  * @return float gray value
  */
 float getGrayscaleValue(int red, int blue, int green){
@@ -18,10 +18,10 @@ float getGrayscaleValue(int red, int blue, int green){
 /**
  * @brief fills the table with the 216 areas needed.
  *        this function sets the coordinates of the area's range
- * 
- * @param pBoxes 
- * @param pPercentage 
- * @param pTable 
+ *
+ * @param pBoxes
+ * @param pPercentage
+ * @param pTable
  */
 void fillTable(int &pBoxes, float pPercentage, std::vector<Area*> &pTable){
     int x1 = 180, x2 = 240, y1 = 0, y2 = 60;
@@ -29,7 +29,7 @@ void fillTable(int &pBoxes, float pPercentage, std::vector<Area*> &pTable){
     float dynamicPercentage = 0;
     while (pBoxes != 216){
         if (x2 > 900){ //if it reaches a limit
-            x1 = 180; 
+            x1 = 180;
             x2 = 240;
             y1 = y2;
             y2 += 60;
@@ -52,13 +52,13 @@ void fillTable(int &pBoxes, float pPercentage, std::vector<Area*> &pTable){
  * @brief starts the analysis of the image. this function uses a probabilistic
  *        algorithm, which generates random (x,y) points following a dynamic
  *        statistics.
- * 
- * @param pPercentage 
- * @param pTotalPoints 
- * @param pTable 
- * @param pWidth 
- * @param pBoxes 
- * @param pImage 
+ *
+ * @param pPercentage
+ * @param pTotalPoints
+ * @param pTable
+ * @param pWidth
+ * @param pBoxes
+ * @param pImage
  */
 void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTable, int pWidth, int pBoxes, unsigned char *pImage){
     int x, y, indexArea, generatedPoints = 0, acceptablePointsValue = pTotalPoints*0.7, grayValue, isEmpty;
@@ -85,11 +85,11 @@ void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTab
             min = currentArea->GetMinPercentage();
             max = currentArea->GetMaxPercentage();
             indexArea++;
-            
+
         }
 
         //if the current area has 0 elements left it tries again (shouldn't happen)
-        isEmpty = currentArea->substract(); 
+        isEmpty = currentArea->substract();
         if(isEmpty){continue;}
 
         //gets randoms (x,y)
@@ -115,7 +115,7 @@ void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTab
         }
 
         generatedPoints++;
-        
+
     }
     cout << generatedPoints << endl;
 }
@@ -124,16 +124,16 @@ void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTab
  * @brief Set the Attributes such as size and shape of each area based on
  *        a calculation of the density of the area, that is, the amount of
  *        points that certain area has.
- * 
- * @param pBoxes 
- * @param pPointsPerBox 
- * @param pTable 
+ *
+ * @param pBoxes
+ * @param pPointsPerBox
+ * @param pTable
  */
 void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
     float density;
     Area *currentArea;
     string shape = "", size = "";
-    
+
     for (int i = 0; i < pBoxes; i++){
         currentArea = pTable.at(i);
         density = ((float)pPointsPerBox - (float)currentArea->GetNumberOfPoints()) / (3600*SAMPLE_RATE);
@@ -153,7 +153,7 @@ void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
         currentArea->SetSize(size);
         currentArea->setDominantGray();
 
-        std::cout << "\n" << i << ". ";
+        /*std::cout << "\n" << i << ". ";
         //cout << density << " ";
         std::cout << currentArea->GetX1() << " ";
         std::cout << currentArea->GetY1() << " ";
@@ -164,7 +164,7 @@ void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
         std::cout << currentArea->GetNumberOfPoints()<< " ";
         std::cout << currentArea->GetGrayColorValue()<< " ";
         std::cout << currentArea->GetShape() << " ";
-        std::cout << currentArea->GetSize() << std::endl;
+        std::cout << currentArea->GetSize() << std::endl;*/
     }
 }
 
