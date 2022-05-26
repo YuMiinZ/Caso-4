@@ -39,10 +39,10 @@ class GeneticBase {
             return rand()%100;
         }*/
 
-        void evaluateFitness(vector<individual*> population){
+        void evaluateFitness(){
             float suma;
-            for(individual* currentIndividual:population){
-                for(individual* currentIndividualCompare: population){
+            for(individual* currentIndividual:*population){
+                for(individual* currentIndividualCompare: *population){
                     if(currentIndividual->getCromosoma()!=currentIndividualCompare->getCromosoma()){
                         suma+=(1/((sqrt(pow((currentIndividualCompare->getXValue()-currentIndividual->getXValue()),2)+pow((currentIndividualCompare->getYValue()-currentIndividual->getYValue()),2)))/10800));
                     }
