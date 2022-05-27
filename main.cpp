@@ -71,7 +71,7 @@ int main(int argc, char const *argv[])
     genetic->initPopulation(populationQuantity);
     genetic->produceGenerations(50, populationQuantity, client);
 
-   /* vector<Area*> tabla=genetic->getCombinationTable();
+    /*vector<Area*> tabla=genetic->getCombinationTable();
     cout<<"Tabla de combinaciones"<<endl;
     for(Area* currentArea:tabla){
         std::cout << currentArea->GetX1() << " ";
@@ -87,12 +87,11 @@ int main(int argc, char const *argv[])
         std::cout << currentArea->GetShape() << "\n";
         //std::cout << currentArea->GetSize() << std::endl;
     }*/
+
     vector<individual*> population = genetic->getPopulation();
     vector<Area*> cromosomaticRepresentation = genetic->getCombinationTable();
 
     client.closeConnection();
-
-
 
     return 0;
 }

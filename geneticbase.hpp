@@ -79,8 +79,14 @@ class GeneticBase {
                 short parent_b_index = rand()%fitnessPopulation->size();
                 individual* parent_b = fitnessPopulation->at(parent_b_index);
                 //cout<<parent_a->getCromosoma()<<" "<<parent_b->getCromosoma()<<endl;
-                population->push_back(cross(parent_a, parent_b));
+                //population->push_back(cross(parent_a, parent_b));
+                population->push_back(parent_a);
+                population->push_back(parent_b);
             }
+
+            /*for(individual* currentIndividual: *fitnessPopulation){
+                //cout<<"Fitness: "<<currentIndividual->getCromosoma()<<" "<<currentIndividual->getXValue()<<" "<<currentIndividual->getYValue()<<endl;
+            }*/
         }
 
         individual* cross(individual *pParent_a, individual *pParent_b) {
@@ -149,7 +155,7 @@ class GeneticBase {
                 individual* p = new individual((unsigned char) rand()%CROMO_MAX_VALUE);
                 population->push_back(p);
             }*/
-            cout<<"Cantidad de la nueva poblacion "<<pAmountOfIndividuals;
+            //cout<<"Cantidad de la nueva poblacion "<<pAmountOfIndividuals;
             for(int quantity=0; quantity<pAmountOfIndividuals; quantity++) {
                 individual* newIndividual = new individual(rand()%65537); //Random number between 0 and 65536
                 verifyRange(newIndividual);
@@ -200,9 +206,11 @@ class GeneticBase {
             string shape = "", size = "";
             for (int i = 0; i < pTable.size(); i++){
                 currentArea = pTable.at(i);
+                cout<<"Tabla de referencia: "<<currentArea->GetMinPercentage()<<" "<<currentArea->GetMaxPercentage()<<endl;
                 for (GrayColor current: currentArea->getVectorColors()){
                     if(current.appearances!=0){
-                        max=min+(65536*(float)current.appearances/(float)pTotalPoints);
+                        max=min+(13925*(float)current.appearances/(float)pTotalPoints);
+                        cout<<"Tabla de combinacion: "<<min<<" "<<max<<endl;
                         Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
                                                 (float)current.appearances/(float)pTotalPoints,current.value, min,max);
                         min=max+1;
@@ -231,12 +239,12 @@ class GeneticBase {
         }
 
         void verifyRange(individual* &pNewIndividual){
-            cout<<endl<<pNewIndividual->getCromosoma()<<" ";
+           // cout<<endl<<pNewIndividual->getCromosoma()<<" ";
             for(Area* currentArea:combinationTable){
                 if(pNewIndividual->getCromosoma()>=currentArea->GetMinPercentage()&&pNewIndividual->getCromosoma()<=currentArea->GetMaxPercentage()){
                     pNewIndividual->setXValue((int)currentArea->GetX1()+rand()%abs((int)currentArea->GetX1()-(int)currentArea->GetX2()+1));
                     pNewIndividual->setYValue((int)currentArea->GetY1()+rand()%abs((int)currentArea->GetY1()-(int)currentArea->GetY2()+1));
-                    cout<<"Cromosoma "<<pNewIndividual->getCromosoma()<<" Minimo "<<currentArea->GetMinPercentage()<<" Maximo "<<currentArea->GetMaxPercentage()<<endl;
+                   // cout<<"Cromosoma "<<pNewIndividual->getCromosoma()<<" Minimo "<<currentArea->GetMinPercentage()<<" Maximo "<<currentArea->GetMaxPercentage()<<endl;
                     break;
                 }
 
