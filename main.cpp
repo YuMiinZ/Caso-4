@@ -1,33 +1,31 @@
-/*
-    Caso 4
-
-    Elaborado por Ericka Yu Min Guo y Fiorella Zelaya Coto
-
-*/
+#define IP_ADDRESS "192.168.0.12"
+#define PORT 4000
 #define SAMPLE_RATE 0.2
 #define DISTRIBUTION_SIZE 3
 #define MAX_NUMBER 65536
 #define STB_IMAGE_IMPLEMENTATION
 
+#pragma comment(lib, "ws2_l2.lib")
+#include <Ws2tcpip.h>
 #include <iostream>
+#include <stdlib.h>
+#include <Windows.h>
+
 #include <vector>
 #include <math.h>
 #include <cmath>
+#include "socket.hpp"
 #include "GrayColor.hpp"
 #include "Area.hpp"
 #include "functions.hpp"
-//#include "Point.hpp"
-// #include <bits/stdc++.h>
 #include "stb_image.h"
-// #include "quadrant.hpp"
 #include "GeneticBase.hpp"
 
-using namespace std;
-
-int main(){
+int main(int argc, char const *argv[])
+{
 
     int boxes = 0, totalPoints = 777600*SAMPLE_RATE,
-    pointsPerBox = totalPoints / 216;
+    pointsPerBox = totalPoints / 216, populationQuantity = 1000;
     float percentage = (float)pointsPerBox/(float)totalPoints;
 
     vector<Area*> table;
@@ -64,10 +62,19 @@ int main(){
     //of points generated in each area.
     setAttributes(boxes, pointsPerBox, table);
 
+    cout << "Iniciando genetico" << endl;
+    socketclient client;
+    client.init();
+    client.clear();
 
     GeneticBase* genetic=new GeneticBase(table);
+    genetic->initPopulation(populationQuantity);
+    genetic->produceGenerations(50, populationQuantity, client);
 
+    vector<individual*> population = genetic->getPopulation();
+    vector<Area*> cromosomaticRepresentation = genetic->getCombinationTable();
 
+    client.closeConnection();
 
-
+    return 0;
 }

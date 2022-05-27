@@ -39,23 +39,30 @@ class GeneticBase {
             return rand()%100;
         }*/
 
-        void evaluateFitness(){
+        void evaluateFitness(int pPopulationQuantity){
             float suma;
-            for(individual* currentIndividual:*population){
+            vector<individual*> individuals;
+            for(individual* currentIndividual: *population){
                 for(individual* currentIndividualCompare: *population){
-                    if(currentIndividual->getCromosoma()!=currentIndividualCompare->getCromosoma()){
+                    if(currentIndividual->getCromosomaValue()!=currentIndividualCompare->getCromosomaValue()){
                         suma+=(1/((sqrt(pow((currentIndividualCompare->getXValue()-currentIndividual->getXValue()),2)+pow((currentIndividualCompare->getYValue()-currentIndividual->getYValue()),2)))/10800));
                     }
                 }
                 currentIndividual->setFitnessValue(suma);
-                //No estoy segura si usar esto o no, pero lo dejo aqui
-                if (suma>200) {  // fitness criteria of selection never will be an absolute value always is relative to the population
-                    fitnessPopulation->push_back(currentIndividual);
-                } else {
-                    unfitnessPopulation->push_back(currentIndividual);
-                }
+
+                individuals.push_back(currentIndividual);
+
                 suma=0;
             }
+
+            sortingPopulation(*fitnessPopulation);
+            int fitnessParents = pPopulationQuantity*0.6;
+
+            for (int i = 0; i < pPopulationQuantity; i++){
+                fitnessPopulation->push_back(individuals.at(i));
+            }
+
+
         }
 
         void reproduce(int pAmountOfChildrens) {
@@ -79,13 +86,13 @@ class GeneticBase {
 
             int cut_position = (rand() % (NIBBLE_SIZE-MIN_GENOTYPE_SIZE_BY_PARENT*2)) + MIN_GENOTYPE_SIZE_BY_PARENT;
 
-            unsigned char mask_a = CROMO_MAX_VALUE - 1; // 255 -> 11111111
+            int mask_a = CROMO_MAX_VALUE - 1; // 255 -> 11111111
             mask_a <<= cut_position;
 
-            unsigned char mask_b = CROMO_MAX_VALUE - 1; // 255 -> 11111111
+            int mask_b = CROMO_MAX_VALUE - 1; // 255 -> 11111111
             mask_b >>= NIBBLE_SIZE - cut_position;
 
-            unsigned char kid = (pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b);
+            int kid = (pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b);
 
             individual *children = new individual((pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b));
             return children;
@@ -141,22 +148,25 @@ class GeneticBase {
                 population->push_back(p);
             }*/
 
-            for(int quantity=0; quantity<200; quantity++) {
+            for(int quantity=0; quantity<pAmountOfIndividuals; quantity++) {
                 individual* newIndividual = new individual(rand()%65537); //Random number between 0 and 65536
                 verifyRange(newIndividual);
                 population->push_back(newIndividual);
+                cout<<newIndividual->getCromosomaValue()<<" ";
             }
         }
 
-        void produceGenerations(int ptargetGenerations, int pChildrensPerGenerations) {
-            /*for(int i=0; i<ptargetGenerations; i++) {
+        void produceGenerations(int ptargetGenerations, int pChildrensPerGenerations, socketclient pClient) {
+          /*  /for(int i=0; i<ptargetGenerations; i++) {
                 evaluateFitness();
                 reproduce(pChildrensPerGenerations);
-            }*/
+            }/*/
 
-            for(int i=0; i<50; i++) {
-                evaluateFitness();
+            for(int i=0; i<ptargetGenerations; i++) {
+                evaluateFitness(pChildrensPerGenerations);
                 reproduce(pChildrensPerGenerations);
+                pClient.clear();
+                paintGeneration(pClient, *population, combinationTable);
             }
         }
 

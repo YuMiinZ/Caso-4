@@ -47,6 +47,10 @@ class individual {
         int getYValue(){
             return yValue;
         }
+
+        int getCromosomaValue(){
+            return cromosomaValue;
+        }
 };
 
 

@@ -1,5 +1,6 @@
 #ifndef __FUNCTIONS_HEADER__
 #define __FUNCTIONS_HEADER__
+#include "lib/individual.h"
 
 using namespace std;
 
@@ -165,6 +166,52 @@ void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
         std::cout << currentArea->GetGrayColorValue()<< " ";
         std::cout << currentArea->GetShape() << " ";
         std::cout << currentArea->GetSize() << std::endl;*/
+    }
+}
+
+int randomNumberBetween(int pMin, int pMax){
+        return pMin + (rand() % (pMax-pMin));
+}
+
+void paintGeneration(socketclient client, vector<individual*> population, vector<Area*> cromosomaticRepresentation){
+    int grayValue, x1, y1, x2, y2, radius;
+    for(individual* current: population){
+        for(Area* currentArea: cromosomaticRepresentation){
+            if (currentArea->GetMinPercentage() < current->getCromosoma() && currentArea->GetMaxPercentage() > current->getCromosoma()){
+                grayValue = (currentArea->GetGrayColorValue()*2550 / 11);
+                x1 = randomNumberBetween(currentArea->GetX1(), currentArea->GetX2());
+                y1 = randomNumberBetween(currentArea->GetY1(), currentArea->GetY2());
+
+                if (currentArea->GetShape() == "line"){
+                    if (currentArea->GetSize() == "S"){
+                        x2 = x1 + 10;
+                        y2 = y1 + 10;
+                    }
+                    else if (currentArea->GetShape() == "M"){
+                        x2 = x1 + 20;
+                        y2 = y1 + 20;
+                    }
+                    else{
+                        x2 = x1 + 30;
+                        y2 = y1 + 30;
+                    }
+                    client.paintLine(0, 0, 0, 255, x1, y1, x2, y2);
+                }
+                else{
+                    if (currentArea->GetSize() == "S"){
+                        radius = 10;
+                    }
+                    else if (currentArea->GetShape() == "M"){
+                        radius = 20;
+                    }
+                    else{
+                        radius = 30;
+                    }
+                    client.paintDot(0, 0, 0, 200, x1, y1, radius);
+                }
+                break;
+            }
+        }
     }
 }
 
