@@ -9,20 +9,20 @@ class individual {
         // decide the size of your nibble for your problem
         float fitnessValue;
         unsigned char cromosoma;
-        int xValue, yValue, cromosomaValue;
+        short xValue, yValue, cromosomaValue;
 
     public:
         /*individual(unsigned char pValue) {
             this->cromosoma = pValue;
         }*/
 
-        individual(int pCromosoma) {
+        individual(short pCromosoma) {
             this->cromosomaValue = pCromosoma;
         }
 
-        unsigned char getCromosoma() {
+       /* unsigned char getCromosoma() {
             return this->cromosoma;
-        }
+        }*/
 
         void setFitnessValue(float pValue) {
             this->fitnessValue = pValue;
@@ -32,23 +32,23 @@ class individual {
             return this->fitnessValue;
         }
 
-        void setXValue(int pXValue){
+        void setXValue(short pXValue){
             xValue=pXValue;
         }
 
-        int getXValue(){
+        short getXValue(){
             return xValue;
         }
 
-        void setYValue(int pYValue){
+        void setYValue(short pYValue){
             yValue=pYValue;
         }
 
-        int getYValue(){
+        short getYValue(){
             return yValue;
         }
 
-        int getCromosomaValue(){
+        short getCromosoma(){
             return cromosomaValue;
         }
 };

@@ -178,7 +178,7 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
     for(individual* current: population){
         for(Area* currentArea: cromosomaticRepresentation){
             if (currentArea->GetMinPercentage() < current->getCromosoma() && currentArea->GetMaxPercentage() > current->getCromosoma()){
-                grayValue = (currentArea->GetGrayColorValue()*2550 / 11);
+                grayValue = (currentArea->GetGrayColorValue()*255 / 11);
                 x1 = randomNumberBetween(currentArea->GetX1(), currentArea->GetX2());
                 y1 = randomNumberBetween(currentArea->GetY1(), currentArea->GetY2());
 
@@ -195,7 +195,7 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
                         x2 = x1 + 30;
                         y2 = y1 + 30;
                     }
-                    client.paintLine(0, 0, 0, 255, x1, y1, x2, y2);
+                    client.paintLine(grayValue, grayValue, grayValue, 255, x1, y1, x2, y2);
                 }
                 else{
                     if (currentArea->GetSize() == "S"){
@@ -207,7 +207,7 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
                     else{
                         radius = 30;
                     }
-                    client.paintDot(0, 0, 0, 200, x1, y1, radius);
+                    client.paintDot(grayValue, grayValue, grayValue, 255, x1, y1, radius);
                 }
                 break;
             }

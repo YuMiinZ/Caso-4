@@ -90,9 +90,8 @@ int main(int argc, char const *argv[])
     vector<individual*> population = genetic->getPopulation();
     vector<Area*> cromosomaticRepresentation = genetic->getCombinationTable();
 
+
     client.closeConnection();
-
-
 
     return 0;
 }
