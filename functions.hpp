@@ -175,12 +175,12 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
                         y2 = y1 + 10;
                     }
                     else if (currentArea->GetShape() == "M"){
-                        x2 = x1 + 20;
-                        y2 = y1 + 20;
+                        x2 = x1 + 10;
+                        y2 = y1 + 10;
                     }
                     else{
-                        x2 = x1 + 30;
-                        y2 = y1 + 30;
+                        x2 = x1 + 10;
+                        y2 = y1 + 10;
                     }
                     client.paintLine(grayValue, grayValue, grayValue, 255, x1, y1, x2, y2);
                 }
@@ -189,10 +189,10 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
                         radius = 5;
                     }
                     else if (currentArea->GetShape() == "M"){
-                        radius = 7;
+                        radius = 5;
                     }
                     else{
-                        radius = 10;
+                        radius = 5;
                     }
                     client.paintDot(grayValue, grayValue, grayValue, 255, x1, y1, radius);
                 }

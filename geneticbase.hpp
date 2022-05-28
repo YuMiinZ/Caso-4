@@ -30,15 +30,18 @@ class GeneticBase {
 
             Output: N/A
             */
-            fitnessPopulation->clear();
-
-            float suma;
+            //fitnessPopulation->clear();
+            float suma, raiz, fraccion;
             vector<individual*> individuals;
 
             for(individual* currentIndividual: *population){
                 for(individual* currentIndividualCompare: *population){
                     if(currentIndividual->getCromosoma()!=currentIndividualCompare->getCromosoma()){
-                        suma+=(1/((sqrt(pow((currentIndividualCompare->getXValue()-currentIndividual->getXValue()),2)+pow((currentIndividualCompare->getYValue()-currentIndividual->getYValue()),2)))/10800));
+                        raiz = sqrt(pow((currentIndividualCompare->getXValue()-currentIndividual->getXValue()),2)+pow((currentIndividualCompare->getYValue()-currentIndividual->getYValue()),2));
+                        fraccion = raiz / 10800;
+                        if (fraccion != 0){
+                            suma+=(1/fraccion);
+                        }
                     }
                 }
                 currentIndividual->setFitnessValue(suma);
@@ -48,13 +51,11 @@ class GeneticBase {
             }
 
             sortingPopulation(individuals);
-            unsigned short fitnessParents = pPopulationQuantity*0.6;
+            unsigned short int fitnessParents = pPopulationQuantity*0.5;
 
             for (int i = 0; i < fitnessParents; i++){
                 fitnessPopulation->push_back(individuals.at(i));
             }
-
-
         }
 
         void reproduce(unsigned short pAmountOfChildrens) {
@@ -69,6 +70,7 @@ class GeneticBase {
 
             */
             // previous population will be cleared, full saved, partial saved depending on the problem
+
             population->clear();
 
             for(unsigned short i=0; i<pAmountOfChildrens; i++) {
@@ -167,8 +169,10 @@ class GeneticBase {
             */
 
             population->clear();
+            unsigned short int random;
             for(int quantity=0; quantity<pAmountOfIndividuals; quantity++) {
-                individual* newIndividual = new individual(rand()%MAX_NUMBER); //Random number between 0 and MAX_NUMBER
+                random = rand()%MAX_NUMBER + rand()%MAX_NUMBER;
+                individual* newIndividual = new individual(random); //Random number between 0 and MAX_NUMBER
                 verifyRange(newIndividual);
                 population->push_back(newIndividual);
             }
@@ -297,7 +301,7 @@ class GeneticBase {
                 lastMin = max + 1;
 
                 density = ((float)pointsPerArea) / (120*SAMPLE_RATE);
-                shape = rand() % 2 == 0 ? "line" : "dot";
+                shape = rand() % 3 == 0 ? "line" : "dot";
                 newArea->SetShape(shape);
 
                 if (shape == "line"){
