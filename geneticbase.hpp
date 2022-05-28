@@ -103,6 +103,7 @@ class GeneticBase {
             short kid = (pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b);
 
             individual *children = new individual((pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b));
+            mutation(children);
             return children;
         }
 
@@ -250,6 +251,14 @@ class GeneticBase {
 
             }
         }
+
+        void mutation(individual* &currentIndividual){
+        if(rand()%500<=6){
+            unsigned short position=rand()%16;
+            currentIndividual->setCromosoma(currentIndividual->getCromosoma() ^ (1<<position));
+        }
+
+    }
 
 };
 

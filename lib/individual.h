@@ -51,6 +51,10 @@ class individual {
         unsigned getCromosoma(){
             return cromosomaValue;
         }
+
+        void setCromosoma(unsigned short pCromosoma){
+            cromosoma=pCromosoma;
+        }
 };
 
 
