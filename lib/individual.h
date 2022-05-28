@@ -15,7 +15,7 @@ class individual {
         individual(short pCromosoma) {
             this->cromosomaValue = pCromosoma;
         }
-
+        //Getters and setters
         void setFitnessValue(float pValue) {
             this->fitnessValue = pValue;
         }

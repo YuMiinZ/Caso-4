@@ -119,7 +119,7 @@ int startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTabl
         generatedPoints++;
 
     }
-    
+
     return generatedPoints;
 }
 
@@ -189,10 +189,10 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
                         radius = 5;
                     }
                     else if (currentArea->GetShape() == "M"){
-                        radius = 10;
+                        radius = 7;
                     }
                     else{
-                        radius = 20;
+                        radius = 10;
                     }
                     client.paintDot(grayValue, grayValue, grayValue, 255, x1, y1, radius);
                 }

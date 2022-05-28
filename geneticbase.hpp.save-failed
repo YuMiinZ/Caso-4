@@ -18,32 +18,21 @@ class GeneticBase {
         int populationQuantity;
         int targetGenerations;
 
-
-        /*void evaluateFitness() {
-            fitnessPopulation->clear();
-            unfitnessPopulation->clear();
-            //formula para fitness float resultado=(1/((sqrt(pow((x2-x1),2)+pow((y2-y1),2)))/10800)); //FORMULA
-
-            for(int i=0;i<population->size(); i++) {
-               population->at(i)->setFitnessValue(fitness(population->at(i)));
-
-                if (population->at(i)->getFitnessValue()>50) {  // fitness criteria of selection never will be an absolute value always is relative to the population
-                    fitnessPopulation->push_back(population->at(i));
-                } else {
-                    unfitnessPopulation->push_back(population->at(i));
-                }
-            }
-        }
-
-        float fitness(individual *pIndividual) {
-            return rand()%100;
-        }*/
-
         void evaluateFitness(int pPopulationQuantity){
+            /*
+            Functioning: This method is responsible for evaluating all the new individuals generated and verifies their fitness, to then obtain a
+             percentage of the most fit. Its fitness function consists in that for each individual its distance with all the others is verified
+             and the one with more neighbors will be fitter, since its fitness value will be high, compared to an individual with few neighbors,
+             the result of the calculations would be a low number.
+
+            Input:
+            -pPopulationQuantity
+
+            Output: N/A
+            */
             float suma;
             vector<individual*> individuals;
-
-
+            fitnessPopulation->clear()
 
             for(individual* currentIndividual: *population){
                 for(individual* currentIndividualCompare: *population){
@@ -58,45 +47,68 @@ class GeneticBase {
             }
 
             sortingPopulation(individuals);
-            int fitnessParents = pPopulationQuantity*0.6;
+            unsigned short fitnessParents = pPopulationQuantity*0.6;
 
-            for (int i = 0; i < pPopulationQuantity; i++){
+            for (int i = 0; i < fitnessParents; i++){
                 fitnessPopulation->push_back(individuals.at(i));
             }
 
 
         }
 
-        void reproduce(int pAmountOfChildrens) {
+        void reproduce(unsigned short pAmountOfChildrens) {
+            /*
+            Functioning: In this method, two parents will be chosen randomly from the fitness population and the cross between them will be made.
+             in order to generate a new child from said crossing.
+
+            Input:
+            -pAmountOfChildrens = number of children to be generated.
+
+            Output: N/A
+
+            */
             // previous population will be cleared, full saved, partial saved depending on the problem
             population->clear();
 
-            for(int i=0; i<pAmountOfChildrens; i++) {
+            for(unsigned short i=0; i<pAmountOfChildrens; i++) {
                 // select any two fitness parents
-                int parent_a_index = rand()%fitnessPopulation->size();
+                unsigned short parent_a_index = rand()%fitnessPopulation->size();
                 individual* parent_a = fitnessPopulation->at(parent_a_index);
 
-                int parent_b_index = rand()%fitnessPopulation->size();
+                unsigned short parent_b_index = rand()%fitnessPopulation->size();
                 individual* parent_b = fitnessPopulation->at(parent_b_index);
-                cout<<parent_a->getCromosoma()<<" "<<parent_b->getCromosoma()<<endl;
+
                 population->push_back(cross(parent_a, parent_b));
             }
         }
 
         individual* cross(individual *pParent_a, individual *pParent_b) {
+             /*
+            Functioning: This function is responsible for crossing two fitness parents.
+
+            Input:
+            -*pParent_a
+            -*pParent_b
+
+            Output:
+            children (individual*)
+
+            */
             // this operation will depends on: nibble size, fixed o variable point
 
-            int cut_position = (rand() % (NIBBLE_SIZE-MIN_GENOTYPE_SIZE_BY_PARENT*2)) + MIN_GENOTYPE_SIZE_BY_PARENT;
+            unsigned short cut_position = (rand() % (NIBBLE_SIZE-MIN_GENOTYPE_SIZE_BY_PARENT*2)) + MIN_GENOTYPE_SIZE_BY_PARENT;
 
-            int mask_a = CROMO_MAX_VALUE - 1; // 255 -> 11111111
+            unsigned short mask_a = CROMO_MAX_VALUE - 1; // 255 -> 11111111
             mask_a <<= cut_position;
 
-            int mask_b = CROMO_MAX_VALUE - 1; // 255 -> 11111111
+            unsigned short mask_b = CROMO_MAX_VALUE - 1; // 255 -> 11111111
             mask_b >>= NIBBLE_SIZE - cut_position;
 
-            int kid = (pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b);
+            unsigned short kid = (pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b);
 
             individual *children = new individual((pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b));
+            mutation(children);
+
             return children;
         }
 
@@ -127,14 +139,14 @@ class GeneticBase {
             this->targetGenerations = 20;
         }
 
-        GeneticBase(vector<Area*> pTable) {
+        GeneticBase(vector<Area*> pTable, int pGeneratedPoints, short pPointsPerBox) {
             this->population = new vector<individual*>();
             this->fitnessPopulation = new vector<individual*>();
             this->unfitnessPopulation = new vector<individual*>();
             this->representation = new vector<cromodistribution*>();
             this->populationQuantity = 0;
             this->targetGenerations = 20;
-            createCombinationTable(pTable, 23328);
+            createCombinationTable(pTable, pGeneratedPoints, pPointsPerBox);
             //sortingTable(combinationTable);
         }
 
@@ -143,27 +155,34 @@ class GeneticBase {
         }
 
         void initPopulation(int pAmountOfIndividuals) {
-            population->clear();
+             /*
+            Functioning: It creates an initial population, for each random individual that it generates, it is sent to verify and thus generate its
+             respective corresponding xy values of the range, to finally add them in the population.
 
-            /*for(int i=0; i<pAmountOfIndividuals; i++) {
-                individual* p = new individual((unsigned char) rand()%CROMO_MAX_VALUE);
-                population->push_back(p);
-            }*/
-            cout<<"Cantidad de la nueva poblacion "<<pAmountOfIndividuals;
+            Input:
+            -pAmountOfIndividuals
+
+            Output: N/A
+            */
+
+            population->clear();
             for(int quantity=0; quantity<pAmountOfIndividuals; quantity++) {
-                individual* newIndividual = new individual(rand()%65537); //Random number between 0 and 65536
+                individual* newIndividual = new individual(rand()%MAX_NUMBER); //Random number between 0 and MAX_NUMBER
                 verifyRange(newIndividual);
                 population->push_back(newIndividual);
-                //cout<<newIndividual->getCromosoma()<<" ";
-                //cout<<newIndividual->getXValue()<<" "<<newIndividual->getYValue()<<endl;
             }
+
         }
 
         void produceGenerations(int ptargetGenerations, int pChildrensPerGenerations, socketclient pClient) {
-          /*  /for(int i=0; i<ptargetGenerations; i++) {
-                evaluateFitness();
-                reproduce(pChildrensPerGenerations);
-            }/*/
+             /*
+            Functioning: Método encargado de generar las generaciones y se les vuelve a evaluar su fitness para asi
+
+            Input:
+
+            Output:
+
+            */
 
             for(int i=0; i<ptargetGenerations; i++) {
                 evaluateFitness(pChildrensPerGenerations);
@@ -193,41 +212,103 @@ class GeneticBase {
         }
 
 
-        void createCombinationTable(vector<Area*> pTable, int pTotalPoints){
+        // void createCombinationTable(vector<Area*> pTable, int pTotalPoints){
+        //     Area *currentArea;
+        //     int min=0, max=0;
+        //     float density;
+        //     int maxOfArea, maxPivote, lastMin = 0;
+        //     string shape = "", size = "";
+        //     for (int i = 0; i < pTable.size(); i++){
+        //         currentArea = pTable.at(i);
+        //         maxOfArea = min + (MAX_NUMBER*((float)(720-currentArea->GetNumberOfPoints())/(float)pTotalPoints));
+        //         maxPivote = maxOfArea / 11;
+        //         //cout << "max area: " << maxOfArea << endl;
+        //         for (GrayColor current: currentArea->getVectorColors()){
+        //             if(true){
+        //                 //max=min+(13925*(float)current.appearances/(float)pTotalPoints);
+        //                 min = lastMin;
+        //                 max= min+maxPivote;
+        //                 Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
+        //                                         (float)current.appearances/(float)pTotalPoints,currentArea->GetGrayColorValue(), min,max);
+        //                 //min = max + 1;
+        //                 lastMin = max + 1;
+        //                 // cout << "min: " << min << " ";
+        //                 // cout << "max: " << max << endl;
+
+        //                 density = ((float)current.appearances) / (120*SAMPLE_RATE);
+
+
+
+        //                 shape = rand() % 2 == 0 ? "line" : "dot";
+        //                 newArea->SetShape(shape);
+
+        //                 if (shape == "line"){
+        //                     if(density < 2){size = "S";}
+        //                     else if (density < 10){size = "M";}
+        //                     else{size = "L";}
+        //                 }
+        //                 else{
+        //                     if(density < 2){size = "L";}
+        //                     else if (density < 10){size = "M";}
+        //                     else{size = "S";}
+        //                 }
+        //                 newArea->SetDensity(density);
+        //                 newArea->SetSize(size);
+
+        //                 combinationTable.push_back(newArea);
+
+        //                 //cout << "Density: " << density << " Shape: " << shape << " Size: " << size << endl;
+        //             }
+        //         }
+        //         min = 0;
+        //     }
+        // }
+
+        void createCombinationTable(vector<Area*> pTable, int pTotalPoints, int pointsPerBox){
+             /*
+            Functioning:
+
+            Input:
+
+            Output:
+
+            */
             Area *currentArea;
             int min=0, max=0;
-            float density;
+            float density, distributionPercentage;
+            int maxOfArea, maxPivote, lastMin = 0, pointsPerArea;
             string shape = "", size = "";
             for (int i = 0; i < pTable.size(); i++){
                 currentArea = pTable.at(i);
-                for (GrayColor current: currentArea->getVectorColors()){
-                    if(current.appearances!=0){
-                        max=min+(65536*(float)current.appearances/(float)pTotalPoints);
-                        Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
-                                                (float)current.appearances/(float)pTotalPoints,current.value, min,max);
-                        min=max+1;
+                min = lastMin;
+                pointsPerArea = pointsPerBox-currentArea->GetNumberOfPoints();
+                distributionPercentage = (float)pointsPerArea/(float)pTotalPoints;
+                max= min+ (MAX_NUMBER*distributionPercentage);
+                Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),pointsPerArea,
+                                        distributionPercentage,currentArea->GetGrayColorValue(), min,max);
+                //min = max + 1;
+                lastMin = max + 1;
 
-                        density = ((float)current.appearances) / (120*SAMPLE_RATE);
-                        shape = rand() % 2 == 0 ? "line" : "dot";
-                        newArea->SetShape(shape);
+                density = ((float)pointsPerArea) / (120*SAMPLE_RATE);
+                shape = rand() % 2 == 0 ? "line" : "dot";
+                newArea->SetShape(shape);
 
-                        if (shape == "line"){
-                            if(density < 0.46){size = "S";}
-                            else if (density < 0.6){size = "M";}
-                            else{size = "L";}
-                        }
-                        else{
-                            if(density < 0.46){size = "L";}
-                            else if (density < 0.6){size = "M";}
-                            else{size = "S";}
-                        }
-                        newArea->SetDensity(density);
-                        newArea->SetSize(size);
-
-                        combinationTable.push_back(newArea);
-                    }
+                if (shape == "line"){
+                    if(density < 20){size = "S";}
+                    else if (density < 21){size = "M";}
+                    else{size = "L";}
                 }
+                else{
+                    if(density < 20){size = "L";}
+                    else if (density < 21){size = "M";}
+                    else{size = "S";}
+                }
+                newArea->SetDensity(density);
+                newArea->SetSize(size);
+
+                combinationTable.push_back(newArea);
             }
+
         }
 
         void verifyRange(individual* &pNewIndividual){
@@ -240,6 +321,14 @@ class GeneticBase {
 
             }
         }
+
+        void mutation(individual* &currentIndividual){
+        if(rand()%100<=6){
+            unsigned short position=rand()%16;
+            currentIndividual->setCromosoma(currentIndividual->getCromosoma() ^ (1<<position));
+        }
+
+    }
 
 };
 

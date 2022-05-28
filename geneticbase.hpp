@@ -19,6 +19,19 @@ class GeneticBase {
         int targetGenerations;
 
         void evaluateFitness(int pPopulationQuantity){
+            /*
+            Functioning: This method is responsible for evaluating all the new individuals generated and verifies their fitness, to then obtain a
+             percentage of the most fit. Its fitness function consists in that for each individual its distance with all the others is verified
+             and the one with more neighbors will be fitter, since its fitness value will be high, compared to an individual with few neighbors,
+             the result of the calculations would be a low number.
+
+            Input:
+            -pPopulationQuantity
+
+            Output: N/A
+            */
+            fitnessPopulation->clear();
+
             float suma;
             vector<individual*> individuals;
 
@@ -45,6 +58,16 @@ class GeneticBase {
         }
 
         void reproduce(unsigned short pAmountOfChildrens) {
+            /*
+            Functioning: In this method, two parents will be chosen randomly from the fitness population and the cross between them will be made.
+             in order to generate a new child from said crossing.
+
+            Input:
+            -pAmountOfChildrens = number of children to be generated.
+
+            Output: N/A
+
+            */
             // previous population will be cleared, full saved, partial saved depending on the problem
             population->clear();
 
@@ -56,12 +79,22 @@ class GeneticBase {
                 unsigned short parent_b_index = rand()%fitnessPopulation->size();
                 individual* parent_b = fitnessPopulation->at(parent_b_index);
 
-                population->push_back(parent_a);
-                population->push_back(parent_b);
+                population->push_back(cross(parent_a, parent_b));
             }
         }
 
         individual* cross(individual *pParent_a, individual *pParent_b) {
+             /*
+            Functioning: This function is responsible for crossing two fitness parents.
+
+            Input:
+            -*pParent_a
+            -*pParent_b
+
+            Output:
+            children (individual*)
+
+            */
             // this operation will depends on: nibble size, fixed o variable point
 
             unsigned short cut_position = (rand() % (NIBBLE_SIZE-MIN_GENOTYPE_SIZE_BY_PARENT*2)) + MIN_GENOTYPE_SIZE_BY_PARENT;
@@ -123,6 +156,16 @@ class GeneticBase {
         }
 
         void initPopulation(int pAmountOfIndividuals) {
+             /*
+            Functioning: It creates an initial population, for each random individual that it generates, it is sent to verify and thus generate its
+             respective corresponding xy values of the range, to finally add them in the population.
+
+            Input:
+            -pAmountOfIndividuals
+
+            Output: N/A
+            */
+
             population->clear();
             for(int quantity=0; quantity<pAmountOfIndividuals; quantity++) {
                 individual* newIndividual = new individual(rand()%MAX_NUMBER); //Random number between 0 and MAX_NUMBER
@@ -133,6 +176,18 @@ class GeneticBase {
         }
 
         void produceGenerations(int ptargetGenerations, int pChildrensPerGenerations, socketclient pClient) {
+             /*
+            Functioning: Method responsible for generating the generations.
+
+            Input:
+            -ptargetGenerations
+            -pChildrensPerGenerations
+            -pClient
+
+            Output: N/A
+
+            */
+
             for(int i=0; i<ptargetGenerations; i++) {
                 evaluateFitness(pChildrensPerGenerations);
                 reproduce(pChildrensPerGenerations);
@@ -186,7 +241,7 @@ class GeneticBase {
 
         //                 density = ((float)current.appearances) / (120*SAMPLE_RATE);
 
-            
+
 
         //                 shape = rand() % 2 == 0 ? "line" : "dot";
         //                 newArea->SetShape(shape);
@@ -214,6 +269,17 @@ class GeneticBase {
         // }
 
         void createCombinationTable(vector<Area*> pTable, int pTotalPoints, int pointsPerBox){
+             /*
+            Functioning: Creation of the combination table that is used as a reference.
+
+            Input:
+            -pTable
+            -pTotalPoints
+            -pointsPerBox
+
+            Output: N/A
+
+            */
             Area *currentArea;
             int min=0, max=0;
             float density, distributionPercentage;
@@ -253,6 +319,14 @@ class GeneticBase {
         }
 
         void verifyRange(individual* &pNewIndividual){
+            /*
+            Functioning: It verifies to which rank the new individual belongs in order to generate its respective xy value.
+
+            Input:
+            -&pNewIndividual
+
+            Output: N/A
+            */
             for(Area* currentArea:combinationTable){
                 if(pNewIndividual->getCromosoma()>=currentArea->GetMinPercentage()&&pNewIndividual->getCromosoma()<=currentArea->GetMaxPercentage()){
                     pNewIndividual->setXValue((int)currentArea->GetX1()+rand()%abs((int)currentArea->GetX1()-(int)currentArea->GetX2()+1));
@@ -264,12 +338,20 @@ class GeneticBase {
         }
 
         void mutation(individual* &currentIndividual){
-        if(rand()%100<=6){
-            unsigned short position=rand()%16;
-            currentIndividual->setCromosoma(currentIndividual->getCromosoma() ^ (1<<position));
-        }
+            /*
+            Functioning: In this function, it is used with a random if the individual will have a mutation or not.
+            If the individual is going to have a mutation, a position will be chosen randomly and that bit will be inverted.
 
-    }
+            Input:
+            -&currentIndividual
+
+            Output: N/A
+            */
+            if(rand()%100<=6){
+                unsigned short position=rand()%16;
+                currentIndividual->setCromosoma(currentIndividual->getCromosoma() ^ (1<<position));
+            }
+        }
 
 };
 
