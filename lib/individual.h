@@ -8,21 +8,13 @@ class individual {
         // any important related info
         // decide the size of your nibble for your problem
         float fitnessValue;
-        unsigned char cromosoma;
         unsigned short xValue, yValue, cromosomaValue;
 
     public:
-        /*individual(unsigned char pValue) {
-            this->cromosoma = pValue;
-        }*/
 
         individual(short pCromosoma) {
             this->cromosomaValue = pCromosoma;
         }
-
-       /* unsigned char getCromosoma() {
-            return this->cromosoma;
-        }*/
 
         void setFitnessValue(float pValue) {
             this->fitnessValue = pValue;
@@ -53,7 +45,7 @@ class individual {
         }
 
         void setCromosoma(unsigned short pCromosoma){
-            cromosoma=pCromosoma;
+            cromosomaValue=pCromosoma;
         }
 };
 

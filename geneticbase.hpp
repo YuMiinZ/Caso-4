@@ -18,32 +18,9 @@ class GeneticBase {
         int populationQuantity;
         int targetGenerations;
 
-
-        /*void evaluateFitness() {
-            fitnessPopulation->clear();
-            unfitnessPopulation->clear();
-            //formula para fitness float resultado=(1/((sqrt(pow((x2-x1),2)+pow((y2-y1),2)))/10800)); //FORMULA
-
-            for(int i=0;i<population->size(); i++) {
-               population->at(i)->setFitnessValue(fitness(population->at(i)));
-
-                if (population->at(i)->getFitnessValue()>50) {  // fitness criteria of selection never will be an absolute value always is relative to the population
-                    fitnessPopulation->push_back(population->at(i));
-                } else {
-                    unfitnessPopulation->push_back(population->at(i));
-                }
-            }
-        }
-
-        float fitness(individual *pIndividual) {
-            return rand()%100;
-        }*/
-
         void evaluateFitness(int pPopulationQuantity){
             float suma;
             vector<individual*> individuals;
-
-
 
             for(individual* currentIndividual: *population){
                 for(individual* currentIndividualCompare: *population){
@@ -78,15 +55,10 @@ class GeneticBase {
 
                 unsigned short parent_b_index = rand()%fitnessPopulation->size();
                 individual* parent_b = fitnessPopulation->at(parent_b_index);
-                //cout<<parent_a->getCromosoma()<<" "<<parent_b->getCromosoma()<<endl;
-                //population->push_back(cross(parent_a, parent_b));
+
                 population->push_back(parent_a);
                 population->push_back(parent_b);
             }
-
-            /*for(individual* currentIndividual: *fitnessPopulation){
-                //cout<<"Fitness: "<<currentIndividual->getCromosoma()<<" "<<currentIndividual->getXValue()<<" "<<currentIndividual->getYValue()<<endl;
-            }*/
         }
 
         individual* cross(individual *pParent_a, individual *pParent_b) {
@@ -104,6 +76,7 @@ class GeneticBase {
 
             individual *children = new individual((pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b));
             mutation(children);
+
             return children;
         }
 
@@ -134,14 +107,14 @@ class GeneticBase {
             this->targetGenerations = 20;
         }
 
-        GeneticBase(vector<Area*> pTable) {
+        GeneticBase(vector<Area*> pTable, int pGeneratedPoints, short pPointsPerBox) {
             this->population = new vector<individual*>();
             this->fitnessPopulation = new vector<individual*>();
             this->unfitnessPopulation = new vector<individual*>();
             this->representation = new vector<cromodistribution*>();
             this->populationQuantity = 0;
             this->targetGenerations = 20;
-            createCombinationTable(pTable, 108864);
+            createCombinationTable(pTable, pGeneratedPoints, pPointsPerBox);
             //sortingTable(combinationTable);
         }
 
@@ -151,27 +124,15 @@ class GeneticBase {
 
         void initPopulation(int pAmountOfIndividuals) {
             population->clear();
-
-            /*for(int i=0; i<pAmountOfIndividuals; i++) {
-                individual* p = new individual((unsigned char) rand()%CROMO_MAX_VALUE);
-                population->push_back(p);
-            }*/
-            //cout<<"Cantidad de la nueva poblacion "<<pAmountOfIndividuals;
             for(int quantity=0; quantity<pAmountOfIndividuals; quantity++) {
                 individual* newIndividual = new individual(rand()%MAX_NUMBER); //Random number between 0 and MAX_NUMBER
                 verifyRange(newIndividual);
                 population->push_back(newIndividual);
-                //cout<<newIndividual->getCromosoma()<<" ";
-                //cout<<newIndividual->getXValue()<<" "<<newIndividual->getYValue()<<endl;
             }
+
         }
 
         void produceGenerations(int ptargetGenerations, int pChildrensPerGenerations, socketclient pClient) {
-          /*  /for(int i=0; i<ptargetGenerations; i++) {
-                evaluateFitness();
-                reproduce(pChildrensPerGenerations);
-            }/*/
-
             for(int i=0; i<ptargetGenerations; i++) {
                 evaluateFitness(pChildrensPerGenerations);
                 reproduce(pChildrensPerGenerations);
@@ -200,65 +161,102 @@ class GeneticBase {
         }
 
 
-        void createCombinationTable(vector<Area*> pTable, int pTotalPoints){
-            Area *currentArea;
-            int min=0, max=0;
-            float density;
-            int maxOfArea, maxPivote, lastMin = 0;
-            string shape = "", size = "";
-            for (int i = 0; i < pTable.size(); i++){
-                currentArea = pTable.at(i);
-                maxOfArea = min + (MAX_NUMBER*((float)(720-currentArea->GetNumberOfPoints())/(float)pTotalPoints));
-                maxPivote = maxOfArea / 11;
-                //cout << "max area: " << maxOfArea << endl;
-                for (GrayColor current: currentArea->getVectorColors()){
-                    if(true){
-                        //max=min+(13925*(float)current.appearances/(float)pTotalPoints);
-                        min = lastMin;
-                        max= min+maxPivote;
-                        Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
-                                                (float)current.appearances/(float)pTotalPoints,current.value, min,max);
-                        //min = max + 1;
-                        lastMin = max + 1;
-                        // cout << "min: " << min << " ";
-                        // cout << "max: " << max << endl;
+        // void createCombinationTable(vector<Area*> pTable, int pTotalPoints){
+        //     Area *currentArea;
+        //     int min=0, max=0;
+        //     float density;
+        //     int maxOfArea, maxPivote, lastMin = 0;
+        //     string shape = "", size = "";
+        //     for (int i = 0; i < pTable.size(); i++){
+        //         currentArea = pTable.at(i);
+        //         maxOfArea = min + (MAX_NUMBER*((float)(720-currentArea->GetNumberOfPoints())/(float)pTotalPoints));
+        //         maxPivote = maxOfArea / 11;
+        //         //cout << "max area: " << maxOfArea << endl;
+        //         for (GrayColor current: currentArea->getVectorColors()){
+        //             if(true){
+        //                 //max=min+(13925*(float)current.appearances/(float)pTotalPoints);
+        //                 min = lastMin;
+        //                 max= min+maxPivote;
+        //                 Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
+        //                                         (float)current.appearances/(float)pTotalPoints,currentArea->GetGrayColorValue(), min,max);
+        //                 //min = max + 1;
+        //                 lastMin = max + 1;
+        //                 // cout << "min: " << min << " ";
+        //                 // cout << "max: " << max << endl;
 
-                        density = ((float)current.appearances) / (120*SAMPLE_RATE);
+        //                 density = ((float)current.appearances) / (120*SAMPLE_RATE);
 
             
 
-                        shape = rand() % 2 == 0 ? "line" : "dot";
-                        newArea->SetShape(shape);
+        //                 shape = rand() % 2 == 0 ? "line" : "dot";
+        //                 newArea->SetShape(shape);
 
-                        if (shape == "line"){
-                            if(density < 2){size = "S";}
-                            else if (density < 10){size = "M";}
-                            else{size = "L";}
-                        }
-                        else{
-                            if(density < 2){size = "L";}
-                            else if (density < 10){size = "M";}
-                            else{size = "S";}
-                        }
-                        newArea->SetDensity(density);
-                        newArea->SetSize(size);
+        //                 if (shape == "line"){
+        //                     if(density < 2){size = "S";}
+        //                     else if (density < 10){size = "M";}
+        //                     else{size = "L";}
+        //                 }
+        //                 else{
+        //                     if(density < 2){size = "L";}
+        //                     else if (density < 10){size = "M";}
+        //                     else{size = "S";}
+        //                 }
+        //                 newArea->SetDensity(density);
+        //                 newArea->SetSize(size);
 
-                        combinationTable.push_back(newArea);
+        //                 combinationTable.push_back(newArea);
 
-                        //cout << "Density: " << density << " Shape: " << shape << " Size: " << size << endl;
-                    }
+        //                 //cout << "Density: " << density << " Shape: " << shape << " Size: " << size << endl;
+        //             }
+        //         }
+        //         min = 0;
+        //     }
+        // }
+
+        void createCombinationTable(vector<Area*> pTable, int pTotalPoints, int pointsPerBox){
+            Area *currentArea;
+            int min=0, max=0;
+            float density, distributionPercentage;
+            int maxOfArea, maxPivote, lastMin = 0, pointsPerArea;
+            string shape = "", size = "";
+            for (int i = 0; i < pTable.size(); i++){
+                currentArea = pTable.at(i);
+                min = lastMin;
+                pointsPerArea = pointsPerBox-currentArea->GetNumberOfPoints();
+                distributionPercentage = (float)pointsPerArea/(float)pTotalPoints;
+                max= min+ (MAX_NUMBER*distributionPercentage);
+                Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),pointsPerArea,
+                                        distributionPercentage,currentArea->GetGrayColorValue(), min,max);
+                //min = max + 1;
+                lastMin = max + 1;
+
+                density = ((float)pointsPerArea) / (120*SAMPLE_RATE);
+                shape = rand() % 2 == 0 ? "line" : "dot";
+                newArea->SetShape(shape);
+
+                if (shape == "line"){
+                    if(density < 20){size = "S";}
+                    else if (density < 21){size = "M";}
+                    else{size = "L";}
                 }
-                min = 0;
+                else{
+                    if(density < 20){size = "L";}
+                    else if (density < 21){size = "M";}
+                    else{size = "S";}
+                }
+                newArea->SetDensity(density);
+                newArea->SetSize(size);
+
+                combinationTable.push_back(newArea);
             }
+
         }
 
         void verifyRange(individual* &pNewIndividual){
-           // cout<<endl<<pNewIndividual->getCromosoma()<<" ";
             for(Area* currentArea:combinationTable){
                 if(pNewIndividual->getCromosoma()>=currentArea->GetMinPercentage()&&pNewIndividual->getCromosoma()<=currentArea->GetMaxPercentage()){
                     pNewIndividual->setXValue((int)currentArea->GetX1()+rand()%abs((int)currentArea->GetX1()-(int)currentArea->GetX2()+1));
                     pNewIndividual->setYValue((int)currentArea->GetY1()+rand()%abs((int)currentArea->GetY1()-(int)currentArea->GetY2()+1));
-                   // cout<<"Cromosoma "<<pNewIndividual->getCromosoma()<<" Minimo "<<currentArea->GetMinPercentage()<<" Maximo "<<currentArea->GetMaxPercentage()<<endl;
                     break;
                 }
 

@@ -47,6 +47,7 @@ class Area{
             maxPercentage = pMaxPercentage;
             GrayColorValue=pNewGrayColor;
         }
+
         int GetX1() const {
                 return x1;
         }
@@ -177,12 +178,6 @@ class Area{
          * @param pNewColor
          */
         void addColor(GrayColor pNewColor){
-                // for (GrayColor current: colors){
-                //         if(current.value == pNewColor.value){
-                //                 current.appearances += 1;
-                //                 return;
-                //         }
-                // }
                 colors.push_back(pNewColor);
         }
 
@@ -207,11 +202,8 @@ class Area{
          * @param pLastMin
          */
         void adjustPercentages(int pTotalPoints, float pLastMin){
-                //std::cout << "current: " << minPercentage << " " << maxPercentage << std::endl;
-                //std::cout << pTotalPoints << " " << numberOfPoints << std::endl;
                 minPercentage = pLastMin;
                 maxPercentage = minPercentage + ((float)numberOfPoints / (float)pTotalPoints);
-                //std::cout << "ADJUST: " << minPercentage << " " << maxPercentage << std::endl;
         }
 
         /**
@@ -224,17 +216,17 @@ class Area{
                _initColorVector(newColorsVector);
                int newColor;
                 for (GrayColor current: colors){
-                        // if(current.appearances > dominant.appearances){ //determines dominant rgb gray color
-                        //         dominant = current;
-                        // }
+                        if(current.appearances > dominant.appearances){ //determines dominant rgb gray color
+                                dominant = current;
+                        }
                         //gets the gray category based on the gray intesity. if it approaches 255 the value approaches 10
                         //if it approaches 0 the value approaches 0
                         newColor = round(current.value * 10 / 255);
                         newColorsVector[newColor].appearances += 1; //increases the appereances to know how many points of that category exist
 
                 }
+                GrayColorValue = dominant.value;
                 colors = newColorsVector;
-                // GrayColorValue = dominant.value;
         }
 };
 

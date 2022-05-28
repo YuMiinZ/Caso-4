@@ -47,6 +47,7 @@ void fillTable(int &pBoxes, float pPercentage, std::vector<Area*> &pTable){
         x2 += 60;
         pBoxes++;
     }
+
 }
 
 /**
@@ -61,7 +62,7 @@ void fillTable(int &pBoxes, float pPercentage, std::vector<Area*> &pTable){
  * @param pBoxes
  * @param pImage
  */
-void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTable, int pWidth, int pBoxes, unsigned char *pImage){
+int startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTable, int pWidth, int pBoxes, unsigned char *pImage){
     int x, y, indexArea, generatedPoints = 0, acceptablePointsValue = pTotalPoints*0.7, grayValue, isEmpty;
     float random, min, max;
     Area *currentArea;
@@ -118,7 +119,8 @@ void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTab
         generatedPoints++;
 
     }
-    cout << generatedPoints << endl;
+    
+    return generatedPoints;
 }
 
 /**
@@ -133,25 +135,9 @@ void startAnalysis(float pPercentage, int pTotalPoints, std::vector<Area*> &pTab
 void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
     float density;
     Area *currentArea;
-    string shape = "", size = "";
 
     for (int i = 0; i < pBoxes; i++){
         currentArea = pTable.at(i);
-        density = ((float)pPointsPerBox - (float)currentArea->GetNumberOfPoints()) / (3600*SAMPLE_RATE);
-        shape = rand() % 2 == 0 ? "line" : "dot";
-        currentArea->SetShape(shape);
-
-        if (shape == "line"){
-            if(density < 0.46){size = "S";}
-            else if (density < 0.53){size = "M";}
-            else{size = "L";}
-        }
-        else{
-            if(density < 0.46){size = "L";}
-            else if (density < 0.53){size = "M";}
-            else{size = "S";}
-        }
-        currentArea->SetSize(size);
         currentArea->setDominantGray();
 
         /*std::cout << "\n" << i << ". ";
@@ -164,8 +150,8 @@ void setAttributes(int pBoxes, int pPointsPerBox, std::vector<Area*> &pTable){
         std::cout << currentArea->GetMaxPercentage() << " ";
         std::cout << currentArea->GetNumberOfPoints()<< " ";
         std::cout << currentArea->GetGrayColorValue()<< " ";
-        std::cout << currentArea->GetShape() << " ";
-        std::cout << currentArea->GetSize() << std::endl;*/
+        //std::cout << currentArea->GetShape() << " ";
+        //std::cout << currentArea->GetSize() << std::endl;*/
     }
 }
 
@@ -178,7 +164,8 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
     for(individual* current: population){
         for(Area* currentArea: cromosomaticRepresentation){
             if (currentArea->GetMinPercentage() < current->getCromosoma() && currentArea->GetMaxPercentage() > current->getCromosoma()){
-                grayValue = (currentArea->GetGrayColorValue()*255 / 11);
+                //grayValue = (currentArea->GetGrayColorValue()*255 / 11);
+                grayValue = currentArea->GetGrayColorValue();
                 x1 = randomNumberBetween(currentArea->GetX1(), currentArea->GetX2());
                 y1 = randomNumberBetween(currentArea->GetY1(), currentArea->GetY2());
 
@@ -199,13 +186,13 @@ void paintGeneration(socketclient client, vector<individual*> population, vector
                 }
                 else{
                     if (currentArea->GetSize() == "S"){
-                        radius = 10;
+                        radius = 5;
                     }
                     else if (currentArea->GetShape() == "M"){
-                        radius = 20;
+                        radius = 10;
                     }
                     else{
-                        radius = 30;
+                        radius = 20;
                     }
                     client.paintDot(grayValue, grayValue, grayValue, 255, x1, y1, radius);
                 }

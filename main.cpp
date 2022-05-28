@@ -11,10 +11,10 @@
 #include <stdlib.h>
 #include <Windows.h>
 
-#include <vector>
+#include <vector> 
 #include <math.h>
 #include <cmath>
-#include <time.h>
+#include <time.h> 
 #include "socket.hpp"
 #include "GrayColor.hpp"
 #include "Area.hpp"
@@ -24,12 +24,11 @@
 
 int main(int argc, char const *argv[])
 {
-    srand(time(0));
-
-    srand(time(NULL));
+    srand(time(0)); 
 
     int boxes = 0, totalPoints = 777600*SAMPLE_RATE,
-    pointsPerBox = totalPoints / 216, populationQuantity = 200;
+    pointsPerBox = totalPoints / 216, populationQuantity = 500,
+    generatedPoints = 0;
     float percentage = (float)pointsPerBox/(float)totalPoints;
 
     vector<Area*> table;
@@ -58,7 +57,7 @@ int main(int argc, char const *argv[])
 
     //Next we start the analysis of the image using random numbers
     //and adjusting the table we previously created.
-    startAnalysis(percentage, totalPoints, table, width, boxes, image);
+    generatedPoints = startAnalysis(percentage, totalPoints, table, width, boxes, image);
     cout << table.size() << endl;
 
     //Then we set the size and shape corresponding to each area
@@ -66,22 +65,30 @@ int main(int argc, char const *argv[])
     //of points generated in each area.
     setAttributes(boxes, pointsPerBox, table);
 
-    cout << "Iniciando genetico" << endl;
+    //initiating the server
     socketclient client;
     client.init();
     client.clear();
 
-    GeneticBase* genetic=new GeneticBase(table);
-    genetic->initPopulation(populationQuantity);
+    //Then we start the second part of the program, which is the genetic algorithm
+    //that's going to paint generation after generation.
+
+    //This constructor builds the cromosomatic representation
+    GeneticBase* genetic=new GeneticBase(table, generatedPoints ,pointsPerBox);
+
+    //We initiate the population
+    genetic->initPopulation(populationQuantity); 
+
+    //Then we produce the generations
     genetic->produceGenerations(50, populationQuantity, client);
  
     /*vector<Area*> tabla=genetic->getCombinationTable(); 
     cout<<"Tabla de combinaciones"<<endl; 
     for(Area* currentArea:tabla){  
         std::cout << currentArea->GetX1() << " ";  
-        std::cout << currentArea->GetY1() << " ";
+        std::cout << currentArea->GetY1() << " "; 
         std::cout << currentArea->GetX2() << " ";
-        std::cout << currentArea->GetY2() << " ";
+        std::cout << currentArea->GetY2() << " "; 
         std::cout << currentArea->GetMinPercentage() << " ";
         std::cout << currentArea->GetMaxPercentage() << " \n";
         // std::cout << currentArea->GetNumberOfPoints()<< " ";
@@ -92,11 +99,10 @@ int main(int argc, char const *argv[])
         //std::cout << currentArea->GetSize() << std::endl;
     }*/
  
-    vector<individual*> population = genetic->getPopulation();
-    vector<Area*> cromosomaticRepresentation = genetic->getCombinationTable();
-
+    //Finally, we close the connection to the server
     client.closeConnection();
 
+    delete genetic;
 
     return 0;
 }
