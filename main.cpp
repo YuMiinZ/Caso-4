@@ -1,4 +1,4 @@
-#define IP_ADDRESS "192.168.0.12"
+#define IP_ADDRESS "192.168.0.6"
 #define PORT 4000
 #define SAMPLE_RATE 0.2
 #define DISTRIBUTION_SIZE 3
@@ -14,6 +14,7 @@
 #include <vector>
 #include <math.h>
 #include <cmath>
+#include <time.h>
 #include "socket.hpp"
 #include "GrayColor.hpp"
 #include "Area.hpp"
@@ -25,6 +26,8 @@ int main(int argc, char const *argv[])
 {
     srand(time(0));
 
+    srand(time(NULL));
+
     int boxes = 0, totalPoints = 777600*SAMPLE_RATE,
     pointsPerBox = totalPoints / 216, populationQuantity = 200;
     float percentage = (float)pointsPerBox/(float)totalPoints;
@@ -34,10 +37,10 @@ int main(int argc, char const *argv[])
     //Now we load the image
 
     int width, height, channels;
-    unsigned char *image = stbi_load("images/1.jpg", &width, &height, &channels, 0);
+    unsigned char *image = stbi_load("images/2.jpg", &width, &height, &channels, 0);
     size_t imageSize = width * height * channels;
     int area = width * height;
-    if(image!=NULL) {
+    if(image!=NULL) { 
         cout << "Image loaded successfully" << endl;
         cout << "Width: " << width << endl;
         cout << "Height: " << height << endl;
@@ -71,24 +74,24 @@ int main(int argc, char const *argv[])
     GeneticBase* genetic=new GeneticBase(table);
     genetic->initPopulation(populationQuantity);
     genetic->produceGenerations(50, populationQuantity, client);
-
-    /*vector<Area*> tabla=genetic->getCombinationTable();
-    cout<<"Tabla de combinaciones"<<endl;
-    for(Area* currentArea:tabla){
-        std::cout << currentArea->GetX1() << " ";
+ 
+    /*vector<Area*> tabla=genetic->getCombinationTable(); 
+    cout<<"Tabla de combinaciones"<<endl; 
+    for(Area* currentArea:tabla){  
+        std::cout << currentArea->GetX1() << " ";  
         std::cout << currentArea->GetY1() << " ";
         std::cout << currentArea->GetX2() << " ";
         std::cout << currentArea->GetY2() << " ";
         std::cout << currentArea->GetMinPercentage() << " ";
-        std::cout << currentArea->GetMaxPercentage() << " ";
-        std::cout << currentArea->GetNumberOfPoints()<< " ";
-        std::cout << currentArea->GetGrayColorValue()<< " ";
-        std::cout << currentArea->GetDensity()<< " ";
+        std::cout << currentArea->GetMaxPercentage() << " \n";
+        // std::cout << currentArea->GetNumberOfPoints()<< " ";
+        //std::cout << currentArea->GetGrayColorValue()<< " ";
+        //std::cout << currentArea->GetDensity()<< " ";
         //std::cout << currentArea->getVectorColors().size()<< " ";
-        std::cout << currentArea->GetShape() << "\n";
+        //std::cout << currentArea->GetShape() << "\n"; 
         //std::cout << currentArea->GetSize() << std::endl;
     }*/
-
+ 
     vector<individual*> population = genetic->getPopulation();
     vector<Area*> cromosomaticRepresentation = genetic->getCombinationTable();
 

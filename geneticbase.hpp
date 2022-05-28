@@ -60,7 +60,7 @@ class GeneticBase {
             sortingPopulation(individuals);
             unsigned short fitnessParents = pPopulationQuantity*0.6;
 
-            for (int i = 0; i < pPopulationQuantity; i++){
+            for (int i = 0; i < fitnessParents; i++){
                 fitnessPopulation->push_back(individuals.at(i));
             }
 
@@ -141,7 +141,7 @@ class GeneticBase {
             this->representation = new vector<cromodistribution*>();
             this->populationQuantity = 0;
             this->targetGenerations = 20;
-            createCombinationTable(pTable, 23328);
+            createCombinationTable(pTable, 108864);
             //sortingTable(combinationTable);
         }
 
@@ -158,7 +158,7 @@ class GeneticBase {
             }*/
             //cout<<"Cantidad de la nueva poblacion "<<pAmountOfIndividuals;
             for(int quantity=0; quantity<pAmountOfIndividuals; quantity++) {
-                individual* newIndividual = new individual(rand()%65537); //Random number between 0 and 65536
+                individual* newIndividual = new individual(rand()%MAX_NUMBER); //Random number between 0 and MAX_NUMBER
                 verifyRange(newIndividual);
                 population->push_back(newIndividual);
                 //cout<<newIndividual->getCromosoma()<<" ";
@@ -204,38 +204,51 @@ class GeneticBase {
             Area *currentArea;
             int min=0, max=0;
             float density;
+            int maxOfArea, maxPivote, lastMin = 0;
             string shape = "", size = "";
             for (int i = 0; i < pTable.size(); i++){
                 currentArea = pTable.at(i);
-                cout<<"Tabla de referencia: "<<currentArea->GetMinPercentage()<<" "<<currentArea->GetMaxPercentage()<<endl;
+                maxOfArea = min + (MAX_NUMBER*((float)(720-currentArea->GetNumberOfPoints())/(float)pTotalPoints));
+                maxPivote = maxOfArea / 11;
+                //cout << "max area: " << maxOfArea << endl;
                 for (GrayColor current: currentArea->getVectorColors()){
-                    if(current.appearances!=0){
-                        max=min+(13925*(float)current.appearances/(float)pTotalPoints);
-                        cout<<"Tabla de combinacion: "<<min<<" "<<max<<endl;
+                    if(true){
+                        //max=min+(13925*(float)current.appearances/(float)pTotalPoints);
+                        min = lastMin;
+                        max= min+maxPivote;
                         Area* newArea=new Area(currentArea->GetX1(),currentArea->GetY1(),currentArea->GetX2(),currentArea->GetY2(),current.appearances,
                                                 (float)current.appearances/(float)pTotalPoints,current.value, min,max);
-                        min=max+1;
+                        //min = max + 1;
+                        lastMin = max + 1;
+                        // cout << "min: " << min << " ";
+                        // cout << "max: " << max << endl;
 
                         density = ((float)current.appearances) / (120*SAMPLE_RATE);
+
+            
+
                         shape = rand() % 2 == 0 ? "line" : "dot";
                         newArea->SetShape(shape);
 
                         if (shape == "line"){
-                            if(density < 0.46){size = "S";}
-                            else if (density < 0.6){size = "M";}
+                            if(density < 2){size = "S";}
+                            else if (density < 10){size = "M";}
                             else{size = "L";}
                         }
                         else{
-                            if(density < 0.46){size = "L";}
-                            else if (density < 0.6){size = "M";}
+                            if(density < 2){size = "L";}
+                            else if (density < 10){size = "M";}
                             else{size = "S";}
                         }
                         newArea->SetDensity(density);
                         newArea->SetSize(size);
 
                         combinationTable.push_back(newArea);
+
+                        //cout << "Density: " << density << " Shape: " << shape << " Size: " << size << endl;
                     }
                 }
+                min = 0;
             }
         }
 
