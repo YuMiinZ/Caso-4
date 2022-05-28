@@ -24,6 +24,7 @@
 int main(int argc, char const *argv[])
 {
 
+
     int boxes = 0, totalPoints = 777600*SAMPLE_RATE,
     pointsPerBox = totalPoints / 216, populationQuantity = 200;
     float percentage = (float)pointsPerBox/(float)totalPoints;
@@ -92,6 +93,7 @@ int main(int argc, char const *argv[])
     vector<Area*> cromosomaticRepresentation = genetic->getCombinationTable();
 
     client.closeConnection();
+
 
     return 0;
 }

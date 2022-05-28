@@ -9,7 +9,7 @@ class individual {
         // decide the size of your nibble for your problem
         float fitnessValue;
         unsigned char cromosoma;
-        short xValue, yValue, cromosomaValue;
+        unsigned short xValue, yValue, cromosomaValue;
 
     public:
         /*individual(unsigned char pValue) {
@@ -36,7 +36,7 @@ class individual {
             xValue=pXValue;
         }
 
-        short getXValue(){
+        unsigned getXValue(){
             return xValue;
         }
 
@@ -44,11 +44,11 @@ class individual {
             yValue=pYValue;
         }
 
-        short getYValue(){
+        unsigned getYValue(){
             return yValue;
         }
 
-        short getCromosoma(){
+        unsigned getCromosoma(){
             return cromosomaValue;
         }
 };
