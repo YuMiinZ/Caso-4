@@ -48,7 +48,11 @@ class GeneticBase {
             for(individual* currentIndividual: *population){
                 for(individual* currentIndividualCompare: *population){
                     if(currentIndividual->getCromosoma()!=currentIndividualCompare->getCromosoma()){
-                        suma+=(1/((sqrt(pow((currentIndividualCompare->getXValue()-currentIndividual->getXValue()),2)+pow((currentIndividualCompare->getYValue()-currentIndividual->getYValue()),2)))/10800));
+                        raiz = sqrt(pow((currentIndividualCompare->getXValue()-currentIndividual->getXValue()),2)+pow((currentIndividualCompare->getYValue()-currentIndividual->getYValue()),2));
+                        fraccion = raiz / 10800;
+                        if (fraccion != 0){
+                            suma+=(1/fraccion);
+                        }
                     }
                 }
                 currentIndividual->setFitnessValue(suma);
@@ -58,7 +62,7 @@ class GeneticBase {
             }
 
             sortingPopulation(individuals);
-            short fitnessParents = pPopulationQuantity*0.6;
+            unsigned short int fitnessParents = pPopulationQuantity*0.5;
 
             for (int i = 0; i < fitnessParents; i++){
                 fitnessPopulation->push_back(individuals.at(i));
