@@ -23,7 +23,7 @@
 
 int main(int argc, char const *argv[])
 {
-
+    srand(time(0));
 
     int boxes = 0, totalPoints = 777600*SAMPLE_RATE,
     pointsPerBox = totalPoints / 216, populationQuantity = 200;

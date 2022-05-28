@@ -58,7 +58,7 @@ class GeneticBase {
             }
 
             sortingPopulation(individuals);
-            short fitnessParents = pPopulationQuantity*0.6;
+            unsigned short fitnessParents = pPopulationQuantity*0.6;
 
             for (int i = 0; i < pPopulationQuantity; i++){
                 fitnessPopulation->push_back(individuals.at(i));
@@ -67,16 +67,16 @@ class GeneticBase {
 
         }
 
-        void reproduce(short pAmountOfChildrens) {
+        void reproduce(unsigned short pAmountOfChildrens) {
             // previous population will be cleared, full saved, partial saved depending on the problem
             population->clear();
 
-            for(short i=0; i<pAmountOfChildrens; i++) {
+            for(unsigned short i=0; i<pAmountOfChildrens; i++) {
                 // select any two fitness parents
-                short parent_a_index = rand()%fitnessPopulation->size();
+                unsigned short parent_a_index = rand()%fitnessPopulation->size();
                 individual* parent_a = fitnessPopulation->at(parent_a_index);
 
-                short parent_b_index = rand()%fitnessPopulation->size();
+                unsigned short parent_b_index = rand()%fitnessPopulation->size();
                 individual* parent_b = fitnessPopulation->at(parent_b_index);
                 //cout<<parent_a->getCromosoma()<<" "<<parent_b->getCromosoma()<<endl;
                 //population->push_back(cross(parent_a, parent_b));
@@ -92,15 +92,15 @@ class GeneticBase {
         individual* cross(individual *pParent_a, individual *pParent_b) {
             // this operation will depends on: nibble size, fixed o variable point
 
-            short cut_position = (rand() % (NIBBLE_SIZE-MIN_GENOTYPE_SIZE_BY_PARENT*2)) + MIN_GENOTYPE_SIZE_BY_PARENT;
+            unsigned short cut_position = (rand() % (NIBBLE_SIZE-MIN_GENOTYPE_SIZE_BY_PARENT*2)) + MIN_GENOTYPE_SIZE_BY_PARENT;
 
-            short mask_a = CROMO_MAX_VALUE - 1; // 255 -> 11111111
+            unsigned short mask_a = CROMO_MAX_VALUE - 1; // 255 -> 11111111
             mask_a <<= cut_position;
 
-            short mask_b = CROMO_MAX_VALUE - 1; // 255 -> 11111111
+            unsigned short mask_b = CROMO_MAX_VALUE - 1; // 255 -> 11111111
             mask_b >>= NIBBLE_SIZE - cut_position;
 
-            short kid = (pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b);
+            unsigned short kid = (pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b);
 
             individual *children = new individual((pParent_a->getCromosoma() & mask_a) | (pParent_b->getCromosoma() & mask_b));
             mutation(children);
@@ -253,7 +253,7 @@ class GeneticBase {
         }
 
         void mutation(individual* &currentIndividual){
-        if(rand()%500<=6){
+        if(rand()%100<=6){
             unsigned short position=rand()%16;
             currentIndividual->setCromosoma(currentIndividual->getCromosoma() ^ (1<<position));
         }
